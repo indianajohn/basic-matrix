@@ -1,0 +1,6 @@
+cmake_minimum_required (VERSION 2.8.11)
+project(basic_matrix)
+set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+enable_testing()
+add_subdirectory(src)
+add_subdirectory(tests)
