@@ -44,8 +44,9 @@ void generatePointSet(std::vector<Matrix> &points,
 void naiveKMeansE2E() {
   std::vector<Matrix> points;
   std::vector<Matrix> true_centroids;
-  generatePointSet(points, true_centroids);
   k_means::KMeansOptions options;
+  options.k = 5;
+  generatePointSet(points, true_centroids, options.k);
   auto result = k_means::clusterByNaiveKMeans(points, options);
   std::cout << "num iterations=" << result.num_iterations
             << ",movement=" << result.movement << std::endl;
