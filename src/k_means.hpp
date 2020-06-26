@@ -6,8 +6,12 @@ namespace k_means {
 
 /// A single cluster.
 struct KMeansCluster {
-  /// Centroid of the cluster.
-  Matrix centroid;
+  KMeansCluster(
+      const size_t &centroid_in,
+      const std::vector<size_t> &member_indices_in = std::vector<size_t>())
+      : centroid(centroid_in), member_indices(member_indices_in) {}
+  /// Index for centroid.
+  size_t centroid;
   /// Indices in the original poitn set of points in the cluster.
   std::vector<size_t> member_indices;
 };
