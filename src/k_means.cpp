@@ -107,7 +107,9 @@ KMeansClustering clusterByNaiveKMeans(const std::vector<Matrix> &points,
   while (result.movement > options.movement_threshold &&
          result.num_iterations < options.max_iterations) {
     assignNearestClusterCenters(points, result);
+    auto clusters_before = result;
     recalculateCentroid(result, points);
+    result.movement = aggregateMovement(clusters_before, result);
     result.num_iterations++;
   }
   return result;
