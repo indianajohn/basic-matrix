@@ -47,6 +47,8 @@ void naiveKMeansE2E() {
   generatePointSet(points, true_centroids);
   k_means::KMeansOptions options;
   auto result = k_means::clusterByNaiveKMeans(points, options);
+  std::cout << "num iterations=" << result.num_iterations
+            << ",movement=" << result.movement << std::endl;
   ASSERT_EQ(result.clusters.size(), options.k);
   size_t num_points = 0;
   for (const auto &cluster : result.clusters) {

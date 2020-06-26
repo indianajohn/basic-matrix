@@ -21,6 +21,12 @@ struct KMeansCluster {
 struct KMeansClustering {
   /// Clusters
   std::vector<KMeansCluster> clusters;
+
+  /// Number of iterations to convergence.
+  size_t num_iterations = 0;
+
+  /// Amount of movement for last iteration.
+  double movement = 0;
 };
 
 struct KMeansOptions {
@@ -31,7 +37,7 @@ struct KMeansOptions {
   size_t k = 10;
 
   // Movement center for all thresholds
-  double movement_threshold = 0.0;
+  double movement_threshold = 0.5;
 };
 
 /// Clusters a vector of N-dimensional points (each point much be the

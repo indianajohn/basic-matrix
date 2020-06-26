@@ -83,19 +83,33 @@ double aggregateMovement(const KMeansClustering &c1,
   }
   return sum;
 }
+void recalculateCentroid(const KMeansClustering &clustering,
+                         const std::vector<Matrix> &points) {
+  for (const auto &cluster : clustering.clusters) {
+    if (cluster.member_indices.size() == 0) {
+      continue;
+    }
+    Matrix centroid = points[cluster.member_indices[0]];
+    for (size_t i = 1; i < cluster.member_indices.size(); i++) {
+      centroid = centroid + points[cluster.member_indices[i]];
+    }
+    centroid =
+        centroid * (1.0 / static_cast<double>(cluster.member_indices.size()));
+  }
+}
 
 }; // namespace
 KMeansClustering clusterByNaiveKMeans(const std::vector<Matrix> &points,
                                       const KMeansOptions &options) {
   KMeansClustering result;
   result.clusters = pickInitialClusters(points, options.k);
-  assignNearestClusterCenters(points, result);
-  /*
-  double movement = std::numeric_limits<size_t>::max();
-  while (movement > options.movement_threshold) {
+  result.movement = std::numeric_limits<size_t>::max();
+  while (result.movement > options.movement_threshold &&
+         result.num_iterations < options.max_iterations) {
+    assignNearestClusterCenters(points, result);
+    recalculateCentroid(result, points);
+    result.num_iterations++;
   }
-  */
-  // TODO
   return result;
 }
 }; // namespace k_means
