@@ -56,7 +56,7 @@ void naiveKMeansE2E() {
   for (const auto &cluster : result.clusters) {
     double min_distance = std::numeric_limits<double>::max();
     for (const auto &centroid : true_centroids) {
-      double distance = (centroid - points[cluster.centroid]).norm();
+      double distance = (centroid - cluster.centroid).norm();
       if (distance < min_distance) {
         min_distance = distance;
       }

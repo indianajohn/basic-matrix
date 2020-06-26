@@ -12,10 +12,12 @@ pickInitialClusters(const std::vector<Matrix> &points, const size_t &num_points,
     return result;
   }
   // Pick one point at random.
-  result.push_back(KMeansCluster(rand() % points.size()));
+  std::vector<size_t> result_indices;
+  result_indices.push_back(rand() % points.size());
   std::unordered_set<size_t> selected_set;
   size_t attempt_num = 0;
-  while (result.size() < num_points && result.size() < points.size()) {
+  while (result_indices.size() < num_points &&
+         result_indices.size() < points.size()) {
     double max_min_distance = 0;
     size_t max_idx = 0;
     // Try num_attempts times for each centroid, save the one that yields
@@ -28,7 +30,7 @@ pickInitialClusters(const std::vector<Matrix> &points, const size_t &num_points,
       auto point = points[candidate_idx];
       double min_distance = 0;
       for (const auto &existing_centroid : result) {
-        auto existing_centroid_pt = points[existing_centroid.centroid];
+        auto existing_centroid_pt = existing_centroid.centroid;
         double distance = (existing_centroid_pt - point).norm();
         if (distance < min_distance) {
           distance = min_distance;
@@ -41,7 +43,10 @@ pickInitialClusters(const std::vector<Matrix> &points, const size_t &num_points,
       attempt_num++;
     }
     selected_set.insert(max_idx);
-    result.push_back(max_idx);
+    result_indices.push_back(max_idx);
+  }
+  for (const auto &idx : result_indices) {
+    result.push_back(KMeansCluster(points[idx]));
   }
   return result;
 }
@@ -60,7 +65,7 @@ void assignNearestClusterCenters(const std::vector<Matrix> &points,
     for (size_t cluster_idx = 0; cluster_idx < result.clusters.size();
          cluster_idx++) {
       const auto &cluster = result.clusters[cluster_idx];
-      double distance = (points[cluster.centroid] - point).norm();
+      double distance = (cluster.centroid - point).norm();
       if (distance < lowest_distance) {
         distance = lowest_distance;
         nearest_idx = cluster_idx;
@@ -70,12 +75,11 @@ void assignNearestClusterCenters(const std::vector<Matrix> &points,
   }
 }
 
-double aggregateMovement(const KMeansClustering &c1, const KMeansClustering &c2,
-                         const std::vector<Matrix> &points) {
+double aggregateMovement(const KMeansClustering &c1,
+                         const KMeansClustering &c2) {
   double sum = 0.;
   for (size_t i = 0; i < c1.clusters.size(); i++) {
-    sum += (points[c1.clusters[i].centroid] - points[c2.clusters[i].centroid])
-               .norm();
+    sum += (c1.clusters[i].centroid - c2.clusters[i].centroid).norm();
   }
   return sum;
 }
