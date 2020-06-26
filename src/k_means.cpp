@@ -15,25 +15,25 @@ pickInitialClusters(const std::vector<Matrix> &points, const size_t &num_points,
   std::vector<size_t> result_indices;
   result_indices.push_back(rand() % points.size());
   std::unordered_set<size_t> selected_set;
-  size_t attempt_num = 0;
   while (result_indices.size() < num_points &&
          result_indices.size() < points.size()) {
     double max_min_distance = 0;
     size_t max_idx = 0;
     // Try num_attempts times for each centroid, save the one that yields
     // the largest min distance from all the centroids.
+    size_t attempt_num = 0;
     while (attempt_num < num_attempts) {
       size_t candidate_idx = rand() % points.size();
       while (selected_set.find(candidate_idx) != selected_set.end()) {
         candidate_idx = rand() % points.size();
       }
       auto point = points[candidate_idx];
-      double min_distance = 0;
-      for (const auto &existing_centroid : result) {
-        auto existing_centroid_pt = existing_centroid.centroid;
+      double min_distance = std::numeric_limits<double>::max();
+      for (const auto &existing_centroid_idx : result_indices) {
+        auto existing_centroid_pt = points[existing_centroid_idx];
         double distance = (existing_centroid_pt - point).norm();
         if (distance < min_distance) {
-          distance = min_distance;
+          min_distance = distance;
         }
       }
       if (min_distance > max_min_distance) {
@@ -67,7 +67,7 @@ void assignNearestClusterCenters(const std::vector<Matrix> &points,
       const auto &cluster = result.clusters[cluster_idx];
       double distance = (cluster.centroid - point).norm();
       if (distance < lowest_distance) {
-        distance = lowest_distance;
+        lowest_distance = distance;
         nearest_idx = cluster_idx;
       }
     }
@@ -83,9 +83,9 @@ double aggregateMovement(const KMeansClustering &c1,
   }
   return sum;
 }
-void recalculateCentroid(const KMeansClustering &clustering,
+void recalculateCentroid(KMeansClustering &clustering,
                          const std::vector<Matrix> &points) {
-  for (const auto &cluster : clustering.clusters) {
+  for (auto &cluster : clustering.clusters) {
     if (cluster.member_indices.size() == 0) {
       continue;
     }
@@ -93,7 +93,7 @@ void recalculateCentroid(const KMeansClustering &clustering,
     for (size_t i = 1; i < cluster.member_indices.size(); i++) {
       centroid = centroid + points[cluster.member_indices[i]];
     }
-    centroid =
+    cluster.centroid =
         centroid * (1.0 / static_cast<double>(cluster.member_indices.size()));
   }
 }
