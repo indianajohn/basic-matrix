@@ -1,4 +1,5 @@
 #include "gauss_newton.hpp"
+#include "io.hpp"
 #include "matrix_helpers.hpp"
 
 using namespace basic_matrix;
@@ -71,8 +72,32 @@ void gaussNewtonWorksForNonlinearSystem() {
   }
 }
 
+void gaussNewtonWorksForLinearSystemWithNoise() {
+  Matrix Xy = loadFromFile("tests/1d_linear_regression.txt");
+  Matrix X(2, Xy.height());
+  Matrix x_first_column(MatrixROI(0, 0, 1, Xy.height(), &X));
+  x_first_column = Matrix(MatrixROI(0, 0, 1, Xy.height(), &Xy));
+  for (size_t i = 0; i < Xy.height(); i++) {
+    X(1, i) = 1;
+  }
+  Matrix y = Matrix(MatrixROI(1, 0, 1, Xy.height(), &Xy));
+  Matrix theta_normal_eqn = (X.transpose() * X).inverse() * X.transpose() * y;
+
+  OptimizationProblem problem;
+  problem.inputs.num_params = 2;
+  problem.outputs.theta = randomMatrix(1, problem.inputs.num_params, -3.0, 3.0);
+  for (size_t v = 0; v < X.height(); v++) {
+    problem.inputs.x.push_back(Matrix(MatrixROI(0, v, 2, 1, &X)).transpose());
+    problem.inputs.y = y;
+  }
+  problem.inputs.function = &linearFunction;
+  gaussNewton(problem);
+  assertMatrixNear(problem.outputs.theta, theta_normal_eqn, 1e-6);
+}
+
 int main() {
   gaussNewtonWorksForLinearSystem();
   gaussNewtonWorksForNonlinearSystem();
+  gaussNewtonWorksForLinearSystemWithNoise();
   return 0;
 }
