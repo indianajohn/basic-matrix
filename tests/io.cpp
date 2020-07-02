@@ -1,6 +1,7 @@
 #include "io.hpp"
 #include "matrix_helpers.hpp"
 #include "test_helpers.hpp"
+#include <cstdio>
 
 using namespace basic_matrix;
 
@@ -52,7 +53,34 @@ void testFileLoading() {
   ASSERT_EQ(matrix.height(), 118);
 }
 
+void testStringWriting() {
+  for (size_t trial = 0; trial < 20; trial++) {
+    Matrix random_mat = randomMatrix(rand() % 10, rand() % 10, -20.0, 20.0);
+    std::string mat_string = writeToString(random_mat);
+    Matrix round_trip = parseFromString(mat_string);
+    if (random_mat.width() > 0 && random_mat.height() > 0) {
+      assertMatrixNear(random_mat, round_trip, 1e-4);
+    }
+  }
+}
+
+void testFileWriting() {
+  // Assume path is set
+  std::string path = "temp_mat.txt";
+  for (size_t trial = 0; trial < 20; trial++) {
+    Matrix random_mat = randomMatrix(rand() % 10, rand() % 10, -20.0, 20.0);
+    writeToFile(path, random_mat);
+    Matrix round_trip = loadFromFile(path);
+    if (random_mat.width() > 0 && random_mat.height() > 0) {
+      assertMatrixNear(random_mat, round_trip, 1e-4);
+    }
+    std::remove(path.c_str());
+  }
+}
+
 int main(int argc, char **argv) {
   testStringLoading();
   testFileLoading();
+  testStringWriting();
+  testFileWriting();
 }

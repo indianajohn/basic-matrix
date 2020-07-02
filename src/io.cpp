@@ -1,6 +1,8 @@
 #include "io.hpp"
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 
 namespace basic_matrix {
 namespace {
@@ -59,5 +61,40 @@ Matrix loadFromFile(const std::string &str) {
     matrix.push_back(parseNumberLine(line));
   }
   return Matrix(matrix);
+}
+
+std::string writeToString(const Matrix &mat) {
+  std::stringstream result_stream;
+  // 15 significant digits (double)
+  result_stream << std::setw(15);
+  for (size_t j = 0; j < mat.height(); j++) {
+    for (size_t i = 0; i < mat.width(); i++) {
+      result_stream << mat(i, j);
+      if (i != mat.width() - 1) {
+        result_stream << ",";
+      }
+    }
+    if (j != mat.height() - 1) {
+      result_stream << std::endl;
+    }
+  }
+  return result_stream.str();
+}
+
+void writeToFile(const std::string &path, const Matrix &mat) {
+  std::ofstream stream(path);
+  // 15 significant digits (double)
+  stream << std::setw(15);
+  for (size_t j = 0; j < mat.height(); j++) {
+    for (size_t i = 0; i < mat.width(); i++) {
+      stream << mat(i, j);
+      if (i != mat.width() - 1) {
+        stream << ",";
+      }
+    }
+    if (j != mat.height() - 1) {
+      stream << std::endl;
+    }
+  }
 }
 }; // namespace basic_matrix
