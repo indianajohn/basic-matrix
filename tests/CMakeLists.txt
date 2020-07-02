@@ -14,6 +14,7 @@ endfunction()
 # test data copy
 configure_file(data/matrix.txt matrix.txt COPYONLY)
 configure_file(data/1d_linear_regression.txt 1d_linear_regression.txt COPYONLY)
+configure_file(data/2d_linear_regression.txt 2d_linear_regression.txt COPYONLY)
 
 prepare_matrix_test(basic matrix.cpp)
 prepare_matrix_test(ops ops.cpp)
