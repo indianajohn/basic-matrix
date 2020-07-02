@@ -11,6 +11,9 @@ function(prepare_matrix_test test_name source_file)
   add_test(${test_name} ${test_name})
 endfunction()
 
+# test data copy
+configure_file(data/matrix.txt matrix.txt COPYONLY)
+
 prepare_matrix_test(basic matrix.cpp)
 prepare_matrix_test(ops ops.cpp)
 prepare_matrix_test(gaussian_elimination gaussian_elimination.cpp)
@@ -20,3 +23,5 @@ prepare_matrix_test(qr_factorization qr_factorization.cpp)
 prepare_matrix_test(optimization_problem optimization_problem.cpp)
 prepare_matrix_test(gauss_newton gauss_newton.cpp)
 prepare_matrix_test(k_means k_means.cpp)
+prepare_matrix_test(io io.cpp)
+
