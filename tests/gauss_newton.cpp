@@ -118,6 +118,8 @@ void gaussNewtonWorksFor2DLinearSystemWithNoise() {
   assertMatrixNear(problem.outputs.theta, theta_normal_eqn, 0.5);
 }
 
+void gaussNewtonWorksForLogisticRegression() {}
+
 int main() {
   gaussNewtonWorksForLinearSystem();
   gaussNewtonWorksForNonlinearSystem();

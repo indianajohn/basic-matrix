@@ -145,6 +145,42 @@ const Matrix Matrix::operator*(const Matrix &other) const {
   return result;
 }
 
+void Matrix::operator+=(const double &scalar) {
+  for (size_t v = 0; v < this->height(); v++) {
+    for (size_t u = 0; u < this->width(); u++) {
+      this->operator()(u, v) += scalar;
+    }
+  }
+}
+
+void Matrix::operator-=(const double &scalar) { (*this) += -scalar; }
+
+void Matrix::operator*=(const double &scalar) {
+  for (size_t v = 0; v < this->height(); v++) {
+    for (size_t u = 0; u < this->width(); u++) {
+      this->operator()(u, v) *= scalar;
+    }
+  }
+}
+
+void Matrix::operator/=(const double &scalar) { (*this) *= (1. / scalar); }
+
+void Matrix::operator+=(const Matrix &matrix) {
+  for (size_t v = 0; v < this->height(); v++) {
+    for (size_t u = 0; u < this->width(); u++) {
+      this->operator()(u, v) += matrix(u, v);
+    }
+  }
+}
+
+void Matrix::operator-=(const Matrix &matrix) {
+  for (size_t v = 0; v < this->height(); v++) {
+    for (size_t u = 0; u < this->width(); u++) {
+      this->operator()(u, v) -= matrix(u, v);
+    }
+  }
+}
+
 const Matrix Matrix::concatRight(const Matrix &other) const {
   if (height() != other.height()) {
     throw std::runtime_error("Matrices should have the same height (to "

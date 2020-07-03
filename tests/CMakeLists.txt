@@ -26,4 +26,5 @@ prepare_matrix_test(optimization_problem optimization_problem.cpp)
 prepare_matrix_test(gauss_newton gauss_newton.cpp)
 prepare_matrix_test(k_means k_means.cpp)
 prepare_matrix_test(io io.cpp)
+prepare_matrix_test(standard_functions standard_functions.cpp)
 

@@ -39,15 +39,37 @@ void normWorks() {
 }
 
 void addWorks() {
-  Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
-  Matrix mat2({{7.0, 8.0, 9.0}, {10.0, 11.0, 12.0}});
-  Matrix mat3 = mat1 + mat2;
-  ASSERT_NEAR(mat3(0, 0), 8.0);
-  ASSERT_NEAR(mat3(1, 0), 10.0);
-  ASSERT_NEAR(mat3(2, 0), 12.0);
-  ASSERT_NEAR(mat3(0, 1), 14.0);
-  ASSERT_NEAR(mat3(1, 1), 16.0);
-  ASSERT_NEAR(mat3(2, 1), 18.0);
+  {
+    Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+    Matrix mat2({{7.0, 8.0, 9.0}, {10.0, 11.0, 12.0}});
+    Matrix expected({{8.0, 10.0, 12.0}, {14.0, 16.0, 18.0}});
+    Matrix mat3 = mat1 + mat2;
+    assertMatrixNear(expected, mat3);
+  }
+  {
+    Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+    Matrix mat2({{7.0, 8.0, 9.0}, {10.0, 11.0, 12.0}});
+    Matrix expected({{8.0, 10.0, 12.0}, {14.0, 16.0, 18.0}});
+    mat1 += mat2;
+    assertMatrixNear(expected, mat2);
+  }
+}
+
+void subtractWorks() {
+  {
+    Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+    Matrix mat2({{7.0, 8.0, 9.0}, {10.0, 11.0, 12.0}});
+    Matrix expected({{6.0, 6.0, 6.0}, {6.0, 6.0, 6.0}});
+    Matrix mat3 = mat2 - mat1;
+    assertMatrixNear(expected, mat3);
+  }
+  {
+    Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+    Matrix mat2({{7.0, 8.0, 9.0}, {10.0, 11.0, 12.0}});
+    Matrix expected({{6.0, 6.0, 6.0}, {6.0, 6.0, 6.0}});
+    mat2 -= mat1;
+    assertMatrixNear(expected, mat2);
+  }
 }
 
 void multiplyWorks() {
@@ -127,6 +149,8 @@ void scalarMultiplyWorks() {
   Matrix minus_A_post = A * -1.0;
   assertMatrixNear(minus_A_expectedA, minus_A);
   assertMatrixNear(minus_A_expectedA, minus_A_post);
+  A *= -1.0;
+  assertMatrixNear(minus_A_expectedA, A);
 }
 
 void minusWorks() {
@@ -150,6 +174,12 @@ void scalarPlusWorks() {
     Matrix A_plus_one = 1 + A;
     assertMatrixNear(A_plus_one, A_expected);
   }
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{1.5, -0.4, 6.5}, {5.53, -1.593, 3.21}});
+    A += 1.;
+    assertMatrixNear(A, A_expected);
+  }
 }
 
 void scalarMinusWorks() {
@@ -164,6 +194,12 @@ void scalarMinusWorks() {
     Matrix A_expected({{0.5, 0.4, -4.5}, {-3.53, 3.593, -1.21}});
     Matrix one_minus_A = 1 - A;
     assertMatrixNear(one_minus_A, A_expected);
+  }
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{-0.5, -2.4, 4.5}, {3.53, -3.593, 1.21}});
+    A -= 1.;
+    assertMatrixNear(A, A_expected);
   }
 }
 
@@ -181,6 +217,12 @@ void scalarDivideWorks() {
     Matrix A_div_2 = 2 / A;
     assertMatrixNear(A_div_2, A_expected);
   }
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{0.25, -0.7, 2.75}, {2.2515, -1.2965, 1.105}});
+    A /= 2.;
+    assertMatrixNear(A, A_expected);
+  }
 }
 
 void negationWorks() {
@@ -193,6 +235,7 @@ int main() {
   transposeWorks();
   normWorks();
   addWorks();
+  subtractWorks();
   multiplyWorks();
   concatRightWorks();
   concatDownWorks();

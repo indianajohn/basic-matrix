@@ -178,10 +178,44 @@ public:
   /// but is transposed compared to the original.
   Matrix transposeROI();
   double norm() const;
+
+  // Operators
   const Matrix operator+(const Matrix &other) const;
   const Matrix operator-(const Matrix &other) const;
   const Matrix operator*(const Matrix &other) const;
+  const Matrix operator+(const double &scalar) const;
+  const Matrix operator-(const double &scalar) const;
   const Matrix operator*(const double &scalar) const;
+  const Matrix operator/(const double &scalar) const;
+  const Matrix operator-() const;
+ 
+  // In-place operators
+
+  /// In-place addition; adds a scalar to all elements.
+  /// Equivalent to:
+  /// A = scalar + A = A + scalar
+  void operator+=(const double &scalar);
+  /// In-place subtraction. This matrix will be changed
+  /// to the value of A = A - scalar. If you want to perform
+  /// A = scalar - A in-place, you could use:
+  /// A *= -scalar;
+  /// A += scalar;
+  void operator-=(const double &scalar);
+  /// in-place multiplication. Equivalent to:
+  /// A = scalar * A = A * scalar
+  void operator*=(const double &scalar);
+  /// In-place division. Equivalent to:
+  /// A = A / scalar;
+  void operator/=(const double &scalar);
+  /// In-place multiplication. Equivalent to:
+  /// A = A + matrix
+  void operator+=(const Matrix& matrix);
+  /// In-place subtraction. Equivalent to:
+  /// A = A - matrix
+  void operator-=(const Matrix& matrix);
+  // Since matrix multiplication results in a matrix
+  // with diffrent storage dimensions, a reallocation
+  // will happen anyway, so *= doesn't make sense.
 
   /// Returns the matrix [this other]
   /// Requires that this and other are of equal height.
@@ -233,6 +267,9 @@ Matrix identity(const size_t &size);
 double bruteForceDeterminant(const Matrix &mat);
 
 basic_matrix::Matrix operator*(const double &a, const basic_matrix::Matrix &b);
+basic_matrix::Matrix operator+(const double &a, const basic_matrix::Matrix &b);
+basic_matrix::Matrix operator-(const double &a, const basic_matrix::Matrix &b);
+basic_matrix::Matrix operator/(const double &a, const basic_matrix::Matrix &b);
 
 } // namespace basic_matrix
 
