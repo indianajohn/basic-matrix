@@ -164,4 +164,5 @@ int main() {
   scalarMultiplyWorks();
   minusWorks();
   scalarPlusWorks();
+  scalarMinusWorks();
 }
