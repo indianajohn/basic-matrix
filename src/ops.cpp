@@ -108,14 +108,14 @@ const Matrix Matrix::operator+(const double &scalar) const {
   Matrix result = *this;
   for (size_t u = 0; u < this->width(); u++) {
     for (size_t v = 0; v < this->height(); v++) {
-      result(u, v) *= scalar;
+      result(u, v) += scalar;
     }
   }
   return result;
 }
 
 const Matrix Matrix::operator-(const double &scalar) const {
-  return operator+(-1);
+  return operator+(-scalar);
 }
 const Matrix Matrix::operator/(const double &scalar) const {
   return (1. / scalar) * (*this);
