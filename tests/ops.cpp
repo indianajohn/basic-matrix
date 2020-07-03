@@ -183,6 +183,12 @@ void scalarDivideWorks() {
   }
 }
 
+void negationWorks() {
+  Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+  Matrix A_expected({{-0.5, 1.4, -5.5}, {-4.53, 2.593, -2.21}});
+  assertMatrixNear(-A, A_expected);
+}
+
 int main() {
   transposeWorks();
   normWorks();
@@ -198,4 +204,5 @@ int main() {
   scalarPlusWorks();
   scalarMinusWorks();
   scalarDivideWorks();
+  negationWorks();
 }

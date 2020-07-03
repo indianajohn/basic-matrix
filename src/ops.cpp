@@ -98,6 +98,7 @@ const Matrix Matrix::operator-(const Matrix &other) const {
   Matrix return_mat = -1.0 * other + *this;
   return return_mat;
 }
+const Matrix Matrix::operator-() const { return -1 * (*this); }
 
 Matrix operator*(const double &a, const basic_matrix::Matrix &b) {
   return b * a;
