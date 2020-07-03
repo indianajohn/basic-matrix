@@ -77,6 +77,13 @@ const Matrix Matrix::operator*(const double &scalar) const {
   return result;
 }
 
+basic_matrix::Matrix operator+(const double &a, const basic_matrix::Matrix &b) {
+  return b + a;
+}
+basic_matrix::Matrix operator-(const double &a, const basic_matrix::Matrix &b) {
+  return a + (-1 * b);
+}
+
 const Matrix Matrix::operator-(const Matrix &other) const {
   Matrix return_mat = -1.0 * other + *this;
   return return_mat;

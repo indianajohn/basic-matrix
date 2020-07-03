@@ -138,17 +138,33 @@ void minusWorks() {
 }
 
 void scalarPlusWorks() {
-  Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
-  Matrix A_expected({{1.5, -0.4, 6.5}, {5.53, -1.593, 3.21}});
-  Matrix A_plus_one = A + 1;
-  assertMatrixNear(A_plus_one, A_expected);
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{1.5, -0.4, 6.5}, {5.53, -1.593, 3.21}});
+    Matrix A_plus_one = A + 1;
+    assertMatrixNear(A_plus_one, A_expected);
+  }
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{1.5, -0.4, 6.5}, {5.53, -1.593, 3.21}});
+    Matrix A_plus_one = 1 + A;
+    assertMatrixNear(A_plus_one, A_expected);
+  }
 }
 
 void scalarMinusWorks() {
-  Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
-  Matrix A_expected({{-0.5, -2.4, 4.5}, {3.53, -3.593, 1.21}});
-  Matrix A_minus_one = A - 1;
-  assertMatrixNear(A_minus_one, A_expected);
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{-0.5, -2.4, 4.5}, {3.53, -3.593, 1.21}});
+    Matrix A_minus_one = A - 1;
+    assertMatrixNear(A_minus_one, A_expected);
+  }
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{0.5, 0.4, -4.5}, {-3.53, 3.593, -1.21}});
+    Matrix one_minus_A = 1 - A;
+    assertMatrixNear(one_minus_A, A_expected);
+  }
 }
 
 int main() {
