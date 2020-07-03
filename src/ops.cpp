@@ -55,9 +55,11 @@ Matrix &Matrix::operator=(const Matrix &mat) {
                                "; widths must match.");
     }
   } else {
-    m_width = mat.width();
-    m_height = mat.height();
-    m_storage.resize(m_width * m_height);
+    if (m_width != mat.width() || m_height != mat.height()) {
+      m_width = mat.width();
+      m_height = mat.height();
+      m_storage.resize(m_width * m_height);
+    }
   }
   for (size_t y = 0; y < mat.height(); y++) {
     for (size_t x = 0; x < mat.width(); x++) {
