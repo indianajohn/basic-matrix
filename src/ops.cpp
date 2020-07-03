@@ -84,6 +84,16 @@ basic_matrix::Matrix operator-(const double &a, const basic_matrix::Matrix &b) {
   return a + (-1 * b);
 }
 
+basic_matrix::Matrix operator/(const double &a, const basic_matrix::Matrix &b) {
+  Matrix result = b;
+  for (size_t v = 0; v < b.height(); v++) {
+    for (size_t u = 0; u < b.width(); u++) {
+      result(u, v) = a / result(u, v);
+    }
+  }
+  return result;
+}
+
 const Matrix Matrix::operator-(const Matrix &other) const {
   Matrix return_mat = -1.0 * other + *this;
   return return_mat;
@@ -105,6 +115,9 @@ const Matrix Matrix::operator+(const double &scalar) const {
 
 const Matrix Matrix::operator-(const double &scalar) const {
   return operator+(-1);
+}
+const Matrix Matrix::operator/(const double &scalar) const {
+  return (1. / scalar) * (*this);
 }
 
 const Matrix Matrix::operator*(const Matrix &other) const {

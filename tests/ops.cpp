@@ -167,6 +167,22 @@ void scalarMinusWorks() {
   }
 }
 
+void scalarDivideWorks() {
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{0.25, -0.7, 2.75}, {2.2515, -1.2965, 1.105}});
+    Matrix A_div_2 = A / 2.;
+    assertMatrixNear(A_div_2, A_expected);
+  }
+  {
+    Matrix A({{0.5, -1.4, 5.5}, {4.53, -2.593, 2.21}});
+    Matrix A_expected({{2.0, -1.42857142857, 0.363636363636},
+                       {0.363636363636, -0.771307365985, 0.452488687783}});
+    Matrix A_div_2 = 2 / A;
+    assertMatrixNear(A_div_2, A_expected);
+  }
+}
+
 int main() {
   transposeWorks();
   normWorks();
@@ -181,4 +197,5 @@ int main() {
   minusWorks();
   scalarPlusWorks();
   scalarMinusWorks();
+  scalarDivideWorks();
 }
