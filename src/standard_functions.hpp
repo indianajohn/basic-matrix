@@ -14,7 +14,24 @@ namespace basic_matrix {
 
 /// Exponentiation.
 DEFINE_UTIL_FUNC(exp);
+/// Log
+DEFINE_UTIL_FUNC(log);
 /// The sigmoid function.
 DEFINE_UTIL_FUNC(sigmoid);
 
+struct LogisticRegressionObjective {
+  /// The logistic regression energy function.
+  /// @param theta - model parameters.
+  /// @param X - input.
+  /// @param y - output data.
+  /// @param E_out - output energy.
+  /// @param lambda - regularization weight.
+  void energy(const Matrix &theta, const Matrix &X, const Matrix &y,
+              Matrix &E_out);
+  // Evaluate y for the model.
+  void eval(const Matrix &theta, const Matrix &X, Matrix &out_y);
+
+  /// regularization weight.
+  double lambda = 0.0;
+};
 }; // namespace basic_matrix
