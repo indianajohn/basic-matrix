@@ -177,6 +177,7 @@ public:
   /// An ROI that points to the original matrix storage
   /// but is transposed compared to the original.
   Matrix transposeROI();
+  const Matrix transposeROI() const;
   double norm() const;
 
   // Operators
@@ -188,7 +189,7 @@ public:
   const Matrix operator*(const double &scalar) const;
   const Matrix operator/(const double &scalar) const;
   const Matrix operator-() const;
- 
+
   // In-place operators
 
   /// In-place addition; adds a scalar to all elements.
@@ -209,10 +210,10 @@ public:
   void operator/=(const double &scalar);
   /// In-place multiplication. Equivalent to:
   /// A = A + matrix
-  void operator+=(const Matrix& matrix);
+  void operator+=(const Matrix &matrix);
   /// In-place subtraction. Equivalent to:
   /// A = A - matrix
-  void operator-=(const Matrix& matrix);
+  void operator-=(const Matrix &matrix);
   // Since matrix multiplication results in a matrix
   // with diffrent storage dimensions, a reallocation
   // will happen anyway, so *= doesn't make sense.

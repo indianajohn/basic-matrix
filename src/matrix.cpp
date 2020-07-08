@@ -1,5 +1,5 @@
-#include "lup_decomposition.hpp"
 #include "matrix.hpp"
+#include "lup_decomposition.hpp"
 #include <cassert>
 #include <iomanip>
 #include <iostream>
@@ -198,6 +198,11 @@ void Matrix::init(const std::vector<std::vector<double>> &input) {
 
 Matrix Matrix::transposeROI() {
   return Matrix(MatrixROI(0, 0, width(), height(), this, 0, 0, true));
+}
+
+const Matrix Matrix::transposeROI() const {
+  return Matrix(MatrixROI(0, 0, width(), height(), const_cast<Matrix *>(this),
+                          0, 0, true));
 }
 
 std::ostream &operator<<(std::ostream &os, const Matrix &mat) {

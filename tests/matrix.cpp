@@ -202,6 +202,12 @@ void wrappedMatricesWork() {
     Matrix test_transposed = test.transpose();
     assertMatrixNear(test_transposed, test.transposeROI());
   }
+  {
+    // const transpose ROI
+    const Matrix test = {{1, 2, 4}, {3.5, 4.2, 1.2}};
+    Matrix test_transposed = test.transpose();
+    assertMatrixNear(test_transposed, test.transposeROI());
+  }
 }
 
 void detWorksOn1x1() {
