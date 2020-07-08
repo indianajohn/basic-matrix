@@ -1,7 +1,7 @@
 #include "matrix.hpp"
 #include "test_helpers.hpp"
-#include <random>
 #include <iostream>
+#include <random>
 
 const static size_t g_random_seed = 2935;
 static std::mt19937 gen(g_random_seed);
@@ -9,6 +9,9 @@ static std::mt19937 gen(g_random_seed);
 void assertMatrixNear(const basic_matrix::Matrix &mat_result,
                       const basic_matrix::Matrix &mat_expected,
                       const double &tol = 1e-9);
+
+void assertContains(const basic_matrix::Matrix &mat_result,
+                    const double &target, const double &tol = 1e-9);
 
 double randomDouble(const double &min, const double &max);
 

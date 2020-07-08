@@ -1,5 +1,5 @@
-#include "matrix.hpp"
 #include "matrix_helpers.hpp"
+#include "matrix.hpp"
 #include <iostream>
 #include <random>
 
@@ -53,4 +53,17 @@ Matrix generateNonsingularMatrix(const size_t &width, const size_t &height) {
     A = randomMatrix(width, height, -100.0, 100.0);
   }
   return A;
+}
+
+void assertContains(const basic_matrix::Matrix &mat_result,
+                    const double &target, const double &tol) {
+  for (size_t u = 0; u < mat_result.width(); u++) {
+    for (size_t v = 0; v < mat_result.height(); v++) {
+      if (fabs(mat_result(u, v) - target) < tol) {
+        return;
+      }
+    }
+  }
+  throw std::runtime_error("Matrix did not contain value: " +
+                           std::to_string(target));
 }
