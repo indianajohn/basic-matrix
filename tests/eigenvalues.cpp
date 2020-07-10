@@ -51,7 +51,9 @@ void testEigenvalues() {
     double not_converged = 0;
     double total = 0;
     for (size_t trial = 0; trial < 100; trial++) {
-      // Generate a non-diagonal matrix with real eigenvalues.
+      // Generate a non-diagonal matrix with real eigenvalues, by
+      // generating a diagonal matrix with random elements and
+      // multiplying it by a similarity transform.
       size_t h = 2 + (rand() % 10);
       Matrix D(h, h);
       for (size_t i = 0; i < h; i++) {
