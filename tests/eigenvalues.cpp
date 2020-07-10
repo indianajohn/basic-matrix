@@ -26,22 +26,18 @@ void testEigenvalues() {
   // Repeated eigenvalues.
   {
     Matrix A = {{-1, 1.5}, {-1.0 / 6.0, -2.0}};
-    double tol = 1e-6;
+    double tol = 1e-4;
     auto result = eigenvalues(A, tol);
-    // ASSERT(result.ok());
+    ASSERT(result.ok());
+    assertContains(result, -1.5, 0.1);
   }
   {
     Matrix A = {{3, 1, 1}, {0, 2, 0}, {1, 1, 3}};
     double tol = 1e-6;
     auto result = eigenvalues(A, tol);
     ASSERT(result.ok());
-  }
-  // Zero eigenvalues.
-  {
-    Matrix A = {{-1, 1.5}, {-1.0 / 6.0, -2.0}};
-    double tol = 1e-6;
-    auto result = eigenvalues(A, tol);
-    ASSERT(result.ok());
+    assertContains(result, 4.0);
+    assertContains(result, 2.0);
   }
   {
     Matrix A = {{11.604381, -7.344107}, {0.187676, 10.981659}};
