@@ -48,6 +48,8 @@ void testEigenvalues() {
     ASSERT_EQ(result.ok(), false);
   }
   {
+    double not_converged = 0;
+    double total = 0;
     for (size_t trial = 0; trial < 100; trial++) {
       // Generate a non-diagonal matrix with real eigenvalues.
       size_t h = 2 + (rand() % 10);
@@ -60,12 +62,14 @@ void testEigenvalues() {
       qrFactorize(Q, R);
       // this will not have real-valued Eigenvales, and will
       // fail to converge.
-      Matrix A = Q * D * Q.transposeROI();
-      auto result = eigenvalues(A, 1e-4);
+      Matrix A = Q * D * Q.transposeROI() * 100;
+      auto result = eigenvalues(A, 1e-5);
       if (!result.ok()) {
-        std::cout << "Not good:" << A << std::endl;
+        not_converged++;
       }
+      total++;
     }
+    ASSERT(not_converged / total < 0.05);
   }
 }
 
