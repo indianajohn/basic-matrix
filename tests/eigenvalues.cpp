@@ -2,6 +2,7 @@
 #include "gaussian_elimination.hpp"
 #include "matrix.hpp"
 #include "matrix_helpers.hpp"
+#include "qr_factorization.hpp"
 #include <iostream>
 
 using namespace basic_matrix;
@@ -45,6 +46,26 @@ void testEigenvalues() {
     // fail to converge.
     auto result = eigenvalues(A, 1e-6);
     ASSERT_EQ(result.ok(), false);
+  }
+  {
+    for (size_t trial = 0; trial < 100; trial++) {
+      // Generate a non-diagonal matrix with real eigenvalues.
+      size_t h = 2 + (rand() % 10);
+      Matrix D(h, h);
+      for (size_t i = 0; i < h; i++) {
+        D(i, i) = randomDouble(-0.5, 0.5);
+      }
+      Matrix R = randomMatrix(h, h, -5.0, 5.0);
+      Matrix Q;
+      qrFactorize(Q, R);
+      // this will not have real-valued Eigenvales, and will
+      // fail to converge.
+      Matrix A = Q * D * Q.transposeROI();
+      auto result = eigenvalues(A, 1e-4);
+      if (!result.ok()) {
+        std::cout << "Not good:" << A << std::endl;
+      }
+    }
   }
 }
 
