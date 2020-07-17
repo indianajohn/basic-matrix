@@ -2,6 +2,7 @@
 
 #include "matrix.hpp"
 #include <functional>
+#include <optional>
 
 namespace basic_matrix {
 /// A nonlinear least squares problem.
@@ -21,6 +22,22 @@ struct OptimizationProblem {
     /// x.width() x 1 matrix, then the storage is reused. Otherwise the
     /// matrix is discarded and recreated and new storage is initialized.
     std::function<void(const Matrix &, const Matrix &, Matrix &)> function;
+
+    /// A cost function. If none is given, ||y - f(x)|| is used. The signature
+    /// is:
+    /// double targetFunction(const Matrix& theta, const std::vector<Matrix>& x,
+    /// const Matrix& y);
+    std::optional<std::function<double(
+        const Matrix &, const std::vector<Matrix> &, const Matrix &)>>
+        cost_function;
+
+    /// An analytical Jacobian. If not provided, the Jacobian will be estimated
+    /// numerically. The format is:
+    /// double targetFunction(const Matrix& theta, const Matrix& x, const
+    /// Matrix& y, Matrix& J);
+    std::optional<std::function<void(
+        const Matrix &, const std::vector<Matrix> &, const Matrix &, Matrix &)>>
+        jacobian;
 
     /// The function inputs
     std::vector<Matrix> x;

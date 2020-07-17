@@ -13,16 +13,28 @@ void gaussNewton(OptimizationProblem &problem) {
       problem.outputs.theta(0, i) = 1.0;
     }
   }
-  estimateJacobian(problem, J);
+  if (problem.inputs.jacobian.has_value()) {
+    problem.inputs.jacobian.value()(problem.outputs.theta, problem.inputs.x,
+                                    problem.inputs.y, J);
+  } else {
+    estimateJacobian(problem, J);
+  }
   for (size_t step = 0; step < problem.config.max_iterations; step++) {
     problem.outputs.num_iterations++;
     Matrix y = evaluate(problem.inputs.function, problem.outputs.theta,
                         problem.inputs.x);
     Matrix r = problem.inputs.y - y;
-    if (r.norm() < problem.config.cost_threshold) {
+    double cost = 0;
+    if (problem.inputs.cost_function.has_value()) {
+      cost = problem.inputs.cost_function.value()(
+          problem.outputs.theta, problem.inputs.x, problem.inputs.y);
+    } else {
+      cost = r.norm();
+    }
+    if (cost < problem.config.cost_threshold) {
       return;
     }
-    
+
     // Gauss-Newton update:
     // (https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm)
     // theta_(k+1) = theta_k + (J_f_t*J_f)^(-1)*J_f_t*r
