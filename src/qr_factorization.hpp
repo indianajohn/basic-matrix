@@ -6,7 +6,15 @@ namespace basic_matrix {
 /// Perform QR factorization on the matrix R. Save the result in
 /// R.
 ///
-/// The Householder method is used here. The methos is described
+/// A QR factorization decomposes the input matrix A into Q an R
+/// such that:
+/// A  = Q * R
+///
+/// Where Q is an orthogonal matrix and R is an upper-triangular
+/// matrix. One application of this algorithm is the computation
+/// of matrix eigenvalues.
+///
+/// The Householder method is used here. The method is described
 /// here: http://www.seas.ucla.edu/~vandenbe/ee133a.html
 /// Complexity is 2*height*width^2 - (2/3)*n^3 flops
 ///

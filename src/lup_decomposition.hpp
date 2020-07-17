@@ -7,6 +7,14 @@ namespace basic_matrix {
 /// PA = LU
 /// Where P is a permutation matrix, L is a lower-diagonal matrix, and
 /// U is an upper-diagonal matrix.
+/// LUP decompositions have a couple of applications.
+///
+/// 1. Create a "cache" whereby linear systems involving the matrix A
+///    can be solved with fewer FLOPs. this is useful when, for example,
+///    computing the matrix inverse, which involves solving different
+///    linear systems A*x = b_i for the i rows of matrix A.
+///
+/// 2. Computing the determinant in a computationally-efficient manner.
 bool lupDecomposition(const basic_matrix::Matrix &A, basic_matrix::Matrix &L,
                       basic_matrix::Matrix &U, basic_matrix::Matrix &P);
 
