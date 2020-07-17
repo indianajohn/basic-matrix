@@ -1,5 +1,5 @@
-#include "gaussian_elimination.hpp"
 #include "lup_decomposition.hpp"
+#include "gaussian_elimination.hpp"
 #include <iostream>
 
 namespace basic_matrix {
@@ -87,6 +87,11 @@ bool luDecomposition(const Matrix &A, Matrix &L, Matrix &U) {
     U(i, i) = 1;
   }
 
+  // This algorithm effectively uses Gaussian elimination to
+  // eliminate the lower diagonal of a matrix, and builds the
+  // matrix U that would correspond to that Gaussian elimination.
+  // It's heavily inspired from here:
+  // https://en.wikipedia.org/wiki/LU_decomposition
   for (size_t j = 0; j < A.width(); j++) {
     for (size_t i = j; i < A.width(); i++) {
       double sum = 0.;
