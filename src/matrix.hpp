@@ -248,6 +248,18 @@ public:
   // Wrap another matrix.
   void addROI(MatrixROI roi_to_add);
 
+  const double* data() const {
+    return &m_storage[0];
+  }
+
+  /// A pointer to the storage. This is only guaranteed to
+  /// actually point to the values of the matrix if the
+  /// matrix storage is contiguous.
+  double* data();
+
+  /// Is the matrix storage contiguous?
+  bool contiguous() const;
+
 private:
   size_t getIndex(const size_t &x, const size_t &y) const;
   void init(const std::vector<std::vector<double>> &input);
@@ -266,6 +278,12 @@ Matrix identity(const size_t &size);
 
 /// Compute determinant based on definition.
 double bruteForceDeterminant(const Matrix &mat);
+
+/// Multiply without any vectorization.
+void naiveMultiply(const Matrix &A, const Matrix &B, Matrix &C);
+
+/// Multiplication with CPU vectorization.
+void simdMultiply(const Matrix &A, const Matrix &B, Matrix &C);
 
 basic_matrix::Matrix operator*(const double &a, const basic_matrix::Matrix &b);
 basic_matrix::Matrix operator+(const double &a, const basic_matrix::Matrix &b);

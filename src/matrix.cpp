@@ -292,5 +292,8 @@ Matrix identity(const size_t &size) {
 size_t Matrix::getIndex(const size_t &x, const size_t &y) const {
   return width() * y + x;
 }
+double *Matrix::data() { return &m_storage[0]; }
+
+bool Matrix::contiguous() const { return (m_rois.size() == 0); }
 
 }; // namespace basic_matrix
