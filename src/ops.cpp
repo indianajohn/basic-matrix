@@ -68,19 +68,32 @@ inline void naiveMatmul(const Matrix &M1, const Matrix &M2, Matrix &out, int m,
   }
 }
 
-/// Compute a 4x16 block of C using a vectorized dot product.
+/// Compute a 4x16 block of C using a vectorized dot product. This
+/// function uses 4 registers for broadcasting a values and 2 registers
+/// for storing b values. The total number of registers used is 4 * 2 = 8
+///  4 * 2 + 4 = 12 memory operations are performed, and 4 * 2 = 8 arithmetic
+/// operations are performed. See:
+/// https://gist.github.com/nadavrot/5b35d44e8ba3dd718e595e40184d03f0
+/// for further details. Trying to get a similar number of memory and
+/// arithemtic operations ensures that Intel processors remain fully
+/// utilized.
 inline void dot4x16(const Matrix &M1, const Matrix &M2, Matrix &out,
                     const int &u_offset, const int &v_offset, const int &j,
                     const int &block_width) {
+  // Storage for accumlation.
   float8 ctmp07[4] = {0.0};
   float8 ctmp815[4] = {0.0};
   for (int p = 0; p < block_width; p++) {
+    // Broadcast 4 elements of matrix A into registers.
     float8 a0p = broadcastFloat8(M1(p + u_offset, 0 + v_offset));
     float8 a1p = broadcastFloat8(M1(p + u_offset, 1 + v_offset));
     float8 a2p = broadcastFloat8(M1(p + u_offset, 2 + v_offset));
     float8 a3p = broadcastFloat8(M1(p + u_offset, 3 + v_offset));
+    // Load 2 blocks of 8 in a row.
     float8 bp0p7 = loadUnalignedFloat8(&M2(0 + j, p + u_offset));
     float8 bp8p15 = loadUnalignedFloat8(&M2(8 + j, p + u_offset));
+    // Multiply each broadcasted value by the two blocks and
+    // accumulate the results.
     ctmp07[0] += a0p * bp0p7;
     ctmp07[1] += a1p * bp0p7;
     ctmp07[2] += a2p * bp0p7;
@@ -90,6 +103,7 @@ inline void dot4x16(const Matrix &M1, const Matrix &M2, Matrix &out,
     ctmp815[2] += a2p * bp8p15;
     ctmp815[3] += a3p * bp8p15;
   }
+  // Store the accumulated results for this column.
   AdduFloat8(&out(0 + j, 0 + v_offset), ctmp07[0]);
   AdduFloat8(&out(0 + j, 1 + v_offset), ctmp07[1]);
   AdduFloat8(&out(0 + j, 2 + v_offset), ctmp07[2]);
@@ -102,6 +116,8 @@ inline void dot4x16(const Matrix &M1, const Matrix &M2, Matrix &out,
 
 /// Tiled matrix multiplication. Multiply 4x16 blocks until that becomes
 /// impossible, and finish off by mutiplying the edges conventionally.
+/// dot4x16 is implemented in an efficient way, so this speeds up computation
+/// greatly.
 inline void tiledMatrixMult(const Matrix &M1, const Matrix &M2, Matrix &out,
                             const int &u_offset, const int &block_width,
                             const int &v_offset, const int &block_height) {
@@ -153,7 +169,9 @@ void naiveMultiply(const Matrix &A, const Matrix &B, Matrix &C) {
 }
 
 void simdMultiply(const Matrix &M1, const Matrix &M2, Matrix &out) {
-  // tile size
+  // Pick a tile size that's pretty close to modern L2 cache sizes.
+  // This reduces the number of times that the matrix is dropped
+  // from the cache.
   constexpr size_t mc = 256;
   constexpr size_t kc = 128;
   for (size_t p = 0; p < M1.width(); p += kc) {
