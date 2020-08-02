@@ -10,9 +10,9 @@ void linearFunction(const Matrix &theta, const Matrix &x, Matrix &y) {
 void linear1D() {
   Matrix A = {1};
   OptimizationProblem problem;
-  problem.inputs.x.push_back({1});
+  problem.inputs.X = {1};
   problem.outputs.theta = {0};
-  problem.inputs.y = A * problem.inputs.x[0];
+  problem.inputs.y = A * problem.inputs.X.row(0);
   problem.inputs.function = &linearFunction;
   problem.inputs.num_params = 1;
   Matrix J;
@@ -33,10 +33,11 @@ void linearND() {
         randomMatrix(1, problem.inputs.num_params, -3.0, 3.0);
     size_t num_samples = problem.inputs.num_params;
     problem.inputs.y = Matrix(1, num_samples);
+    problem.inputs.X = Matrix(problem.inputs.num_params, num_samples);
     for (size_t i = 0; i < num_samples; i++) {
-      Matrix row = randomMatrix(problem.inputs.num_params, 1, -10.0, 10.0);
-      problem.inputs.x.push_back(row.transpose());
-      problem.inputs.y(0, i) = (row * theta_gt)(0, 0);
+      problem.inputs.X.row(i) =
+          randomMatrix(problem.inputs.num_params, 1, -10.0, 10.0);
+      problem.inputs.y(0, i) = (problem.inputs.X.row(i) * theta_gt)(0, 0);
     }
     problem.inputs.function = &linearFunction;
     Matrix J;
@@ -45,10 +46,10 @@ void linearND() {
     // Check that the linearized system is equivalent to the linear system
     Matrix u_0 = problem.outputs.theta;
     Matrix u = randomMatrix(1, problem.inputs.num_params, -5.0, 5.0);
-    Matrix y_u_0 = evaluate(&linearFunction, u_0, problem.inputs.x);
-    Matrix y_val = evaluate(&linearFunction, u, problem.inputs.x);
+    Matrix y_u_0 = evaluate(&linearFunction, u_0, problem.inputs.X);
+    Matrix y_val = evaluate(&linearFunction, u, problem.inputs.X);
     Matrix result = y_u_0 + J * (u - u_0);
-    assertMatrixNear(result, y_val, 1e-3);
+    ASSERT_MATRIX_NEAR_TOL(result, y_val, 1e-3);
   }
 }
 

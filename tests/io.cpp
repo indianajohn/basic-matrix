@@ -18,32 +18,32 @@ void testStringLoading() {
   {
     Matrix expected = {{0.3, 2e3, 3.2e3}, {999, 0.4, -3}, {1.5e-3, 2, 1e-3}};
     Matrix matrix = parseFromString(generateTestDataWithoutNewline());
-    assertMatrixNear(matrix, expected);
+    ASSERT_MATRIX_NEAR(matrix, expected);
   }
   {
     Matrix expected = {{0.3, 2e3, 3.2e3}, {999, 0.4, -3}, {1.5e-3, 2, 1e-3}};
     Matrix matrix = parseFromString(generateTestDataWithNewline());
-    assertMatrixNear(matrix, expected);
+    ASSERT_MATRIX_NEAR(matrix, expected);
   }
   {
     Matrix matrix = parseFromString("");
     Matrix expected = {};
-    assertMatrixNear(matrix, expected);
+    ASSERT_MATRIX_NEAR(matrix, expected);
   }
   {
     Matrix matrix = parseFromString("3");
     Matrix expected = {3};
-    assertMatrixNear(matrix, expected);
+    ASSERT_MATRIX_NEAR(matrix, expected);
   }
   {
     Matrix matrix = parseFromString("3,4.0");
     Matrix expected = {3, 4.0};
-    assertMatrixNear(matrix, expected);
+    ASSERT_MATRIX_NEAR(matrix, expected);
   }
   {
     Matrix matrix = parseFromString("3\n4.0");
     std::vector<std::vector<double>> expected = {{3.}, {4.0}};
-    assertMatrixNear(matrix, Matrix(expected));
+    ASSERT_MATRIX_NEAR(matrix, Matrix(expected));
   }
 }
 
@@ -59,7 +59,7 @@ void testStringWriting() {
     std::string mat_string = writeToString(random_mat);
     Matrix round_trip = parseFromString(mat_string);
     if (random_mat.width() > 0 && random_mat.height() > 0) {
-      assertMatrixNear(random_mat, round_trip, 1e-4);
+      ASSERT_MATRIX_NEAR_TOL(random_mat, round_trip, 1e-4);
     }
   }
 }
@@ -72,7 +72,7 @@ void testFileWriting() {
     writeToFile(path, random_mat);
     Matrix round_trip = loadFromFile(path);
     if (random_mat.width() > 0 && random_mat.height() > 0) {
-      assertMatrixNear(random_mat, round_trip, 1e-4);
+      ASSERT_MATRIX_NEAR_TOL(random_mat, round_trip, 1e-4);
     }
     std::remove(path.c_str());
   }

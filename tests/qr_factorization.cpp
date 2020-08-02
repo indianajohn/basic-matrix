@@ -1,5 +1,5 @@
-#include "matrix_helpers.hpp"
 #include "qr_factorization.hpp"
+#include "matrix_helpers.hpp"
 #include "test_helpers.hpp"
 
 using namespace basic_matrix;
@@ -37,7 +37,7 @@ void qrSolveWorksForSquareMatrices() {
     Matrix b = A * x;
     Matrix b_result = b;
     solveQR(A, b_result);
-    assertMatrixNear(x, b_result, 1e-2);
+    ASSERT_MATRIX_NEAR_TOL(x, b_result, 1e-2);
   }
 }
 
@@ -52,7 +52,7 @@ void qrSolveWorksForOverconstrainedSystems() {
     Matrix b_result = b;
     solveQR(A, b_result);
     Matrix x_result(MatrixROI(0, 0, 1, A.width(), &b_result));
-    assertMatrixNear(x, x_result, 1e-2);
+    ASSERT_MATRIX_NEAR_TOL(x, x_result, 1e-2);
   }
 }
 

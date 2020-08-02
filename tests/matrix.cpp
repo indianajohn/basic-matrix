@@ -166,7 +166,7 @@ void wrappedMatricesWork() {
   {
     Matrix test = {{1, 2, 4}, {3.5, 4.2, 1.2}};
     Matrix wrapped(MatrixROI(0, 0, test.width(), test.height(), &test));
-    assertMatrixNear(wrapped, test);
+    ASSERT_MATRIX_NEAR(wrapped, test);
     std::stringstream ss;
     // Make sure stream works on wrapped matrices
     ss << wrapped << std::endl;
@@ -187,7 +187,7 @@ void wrappedMatricesWork() {
     std::stringstream ss;
     // Make sure stream works on wrapped matrices
     ss << wrapped << std::endl;
-    assertMatrixNear(wrapped, wrapped_expected);
+    ASSERT_MATRIX_NEAR(wrapped, wrapped_expected);
     wrapped(1, 1) = 5.5;
     ASSERT_NEAR(wrapped(1, 1), 5.5);
     ASSERT_NEAR(wrapped(1, 1), test0(1, 1));
@@ -199,13 +199,13 @@ void wrappedMatricesWork() {
     // Transpose
     Matrix test = {{1, 2, 4}, {3.5, 4.2, 1.2}};
     Matrix test_transposed = test.transpose();
-    assertMatrixNear(test_transposed, test.transposeROI());
+    ASSERT_MATRIX_NEAR(test_transposed, test.transposeROI());
   }
   {
     // const transpose ROI
     const Matrix test = {{1, 2, 4}, {3.5, 4.2, 1.2}};
     Matrix test_transposed = test.transpose();
-    assertMatrixNear(test_transposed, test.transposeROI());
+    ASSERT_MATRIX_NEAR(test_transposed, test.transposeROI());
   }
 }
 
@@ -242,19 +242,19 @@ void equalsWorks() {
   Matrix wrapped(MatrixROI(0, 0, 2, 2, &mat));
   Matrix mat_to_set = {{9, 9}, {10, 10}};
   wrapped = mat_to_set;
-  assertMatrixNear(wrapped, mat_to_set);
+  ASSERT_MATRIX_NEAR(wrapped, mat_to_set);
   Matrix expected = {
       {9, 9, 11, 12}, {10, 10, 63, 64}, {7, 18, 9, 10}, {12, 49, 19, 19}};
-  assertMatrixNear(mat, expected);
+  ASSERT_MATRIX_NEAR(mat, expected);
 }
 
 void rowWorks() {
   Matrix mat = {
       {1, 4, 11, 12}, {4, 59, 63, 64}, {7, 18, 9, 10}, {12, 49, 19, 19}};
-  assertMatrixNear(mat.row(0), {1, 4, 11, 12});
-  assertMatrixNear(mat.row(1), {4, 59, 63, 64});
-  assertMatrixNear(mat.row(2), {7, 18, 9, 10});
-  assertMatrixNear(mat.row(3), {12, 49, 19, 19});
+  ASSERT_MATRIX_NEAR(mat.row(0), Matrix({1, 4, 11, 12}));
+  ASSERT_MATRIX_NEAR(mat.row(1), Matrix({4, 59, 63, 64}));
+  ASSERT_MATRIX_NEAR(mat.row(2), Matrix({7, 18, 9, 10}));
+  ASSERT_MATRIX_NEAR(mat.row(3), Matrix({12, 49, 19, 19}));
 }
 int main() {
   emptyMatrix();

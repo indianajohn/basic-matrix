@@ -10,21 +10,21 @@ void doesNotChangeIdentity() {
   Matrix mat_output({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}});
   Matrix mat_expected({{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}});
   gaussianElimination(mat_output);
-  assertMatrixNear(mat_expected, mat_output);
+  ASSERT_MATRIX_NEAR(mat_expected, mat_output);
 }
 
 void linearlyDependentRows() {
   Matrix mat_output({{1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}});
   Matrix mat_expected({{1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}});
   gaussianElimination(mat_output);
-  assertMatrixNear(mat_expected, mat_output);
+  ASSERT_MATRIX_NEAR(mat_expected, mat_output);
 }
 
 void rankTwo() {
   Matrix mat_output({{1, 0, 0, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}, {1, 1, 1, 1}});
   Matrix mat_expected({{1, 0, 0, 1}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}});
   gaussianElimination(mat_output);
-  assertMatrixNear(mat_expected, mat_output);
+  ASSERT_MATRIX_NEAR(mat_expected, mat_output);
 }
 
 void solveByGaussianEliminationWorks() {
@@ -34,10 +34,10 @@ void solveByGaussianEliminationWorks() {
     size_t height = width;
     Matrix A = generateNonsingularMatrix(width, height);
     Matrix x = randomMatrix(1, A.height(), -10.0, 10.0);
-    Matrix b = A*x;
+    Matrix b = A * x;
     Matrix b_result = b;
     solveByGaussianElimination(A, b_result);
-    assertMatrixNear(x, b_result);
+    ASSERT_MATRIX_NEAR(x, b_result);
   }
 }
 

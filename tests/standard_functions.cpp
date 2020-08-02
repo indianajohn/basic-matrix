@@ -100,7 +100,7 @@ void testLogisticRegressionObjective() {
   fctn.gradient(theta, X, y, J);
   Matrix J_expected({-0.1, -12.009217, -11.262842});
   J_expected = J_expected.transpose();
-  assertMatrixNear(J, J_expected, 1e-4);
+  ASSERT_MATRIX_NEAR_TOL(J, J_expected, 1e-4);
 }
 
 void testLogisticRegressionConvergence() {

@@ -27,14 +27,15 @@ void testLinearSystem() {
   problem.outputs.theta = randomMatrix(1, problem.inputs.num_params, -3.0, 3.0);
   size_t num_samples = problem.inputs.num_params;
   problem.inputs.y = Matrix(1, num_samples);
+  problem.inputs.X = Matrix(problem.inputs.num_params, num_samples);
   for (size_t i = 0; i < num_samples; i++) {
     Matrix row = randomMatrix(problem.inputs.num_params, 1, -10.0, 10.0);
-    problem.inputs.x.push_back(row.transpose());
+    problem.inputs.X.row(i) = row;
     problem.inputs.y(0, i) = (row * theta_gt)(0, 0);
   }
   problem.inputs.function = &linearFunction;
   gaussNewton(problem);
-  assertMatrixNear(problem.outputs.theta, theta_gt, 1e-6);
+  ASSERT_MATRIX_NEAR_TOL(problem.outputs.theta, theta_gt, 1e-6);
   ASSERT(problem.outputs.num_iterations > 0);
 }
 
@@ -45,16 +46,17 @@ void testNonlinearSystem() {
   problem.outputs.theta = randomMatrix(1, problem.inputs.num_params, -3.0, 3.0);
   size_t num_samples = problem.inputs.num_params;
   problem.inputs.y = Matrix(1, num_samples);
+  problem.inputs.X = Matrix(problem.inputs.num_params, num_samples);
   for (size_t i = 0; i < num_samples; i++) {
     Matrix row = randomMatrix(problem.inputs.num_params, 1, -10.0, 10.0);
-    problem.inputs.x.push_back(row.transpose());
+    problem.inputs.X.row(i) = row;
     Matrix y;
-    nonlinearFunction(theta_gt, problem.inputs.x.back(), y);
+    nonlinearFunction(theta_gt, problem.inputs.X.row(i), y);
     problem.inputs.y(0, i) = y(0, 0);
   }
   problem.inputs.function = &nonlinearFunction;
   gaussNewton(problem);
-  assertMatrixNear(problem.outputs.theta, theta_gt, 1e-6);
+  ASSERT_MATRIX_NEAR_TOL(problem.outputs.theta, theta_gt, 1e-6);
   ASSERT(problem.outputs.num_iterations > 0);
 }
 
@@ -86,13 +88,11 @@ void gaussNewtonWorksFor1DLinearSystemWithNoise() {
   OptimizationProblem problem;
   problem.inputs.num_params = 2;
   problem.outputs.theta = randomMatrix(1, problem.inputs.num_params, -3.0, 3.0);
-  for (size_t v = 0; v < X.height(); v++) {
-    problem.inputs.x.push_back(Matrix(MatrixROI(0, v, 2, 1, &X)).transpose());
-    problem.inputs.y = y;
-  }
+  problem.inputs.X = X;
+  problem.inputs.y = y;
   problem.inputs.function = &linearFunction;
   gaussNewton(problem);
-  assertMatrixNear(problem.outputs.theta, theta_normal_eqn, 1e-6);
+  ASSERT_MATRIX_NEAR_TOL(problem.outputs.theta, theta_normal_eqn, 1e-6);
 }
 
 void gaussNewtonWorksFor2DLinearSystemWithNoise() {
@@ -109,13 +109,11 @@ void gaussNewtonWorksFor2DLinearSystemWithNoise() {
   OptimizationProblem problem;
   problem.inputs.num_params = 3;
   problem.outputs.theta = randomMatrix(1, problem.inputs.num_params, -3.0, 3.0);
-  for (size_t v = 0; v < X.height(); v++) {
-    problem.inputs.x.push_back(Matrix(MatrixROI(0, v, 3, 1, &X)).transpose());
-    problem.inputs.y = y;
-  }
+  problem.inputs.X = X;
+  problem.inputs.y = y;
   problem.inputs.function = &linearFunction;
   gaussNewton(problem);
-  assertMatrixNear(problem.outputs.theta, theta_normal_eqn, 0.5);
+  ASSERT_MATRIX_NEAR_TOL(problem.outputs.theta, theta_normal_eqn, 0.5);
 }
 
 void gaussNewtonWorksForLogisticRegression() {}

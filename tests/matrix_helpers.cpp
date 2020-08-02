@@ -5,8 +5,8 @@
 
 using namespace basic_matrix;
 
-void assertMatrixNear(const Matrix &mat_result, const Matrix &mat_expected,
-                      const double &tol) {
+bool matrixNear(const Matrix &mat_result, const Matrix &mat_expected,
+                const double &tol) {
   ASSERT_EQ(mat_result.width(), mat_expected.width());
   ASSERT_EQ(mat_result.height(), mat_expected.height());
   bool near = true;
@@ -18,12 +18,9 @@ void assertMatrixNear(const Matrix &mat_result, const Matrix &mat_expected,
     }
   }
   if (!near) {
-    std::cerr << "The matrix:" << std::endl
-              << mat_result
-              << " was supposed to be near the matrix: " << std::endl
-              << mat_expected << "but wasn't.";
-    ASSERT(false);
+    return false;
   }
+  return true;
 }
 
 double randomDouble(const double &min, const double &max) {

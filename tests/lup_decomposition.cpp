@@ -1,5 +1,5 @@
-#include "gaussian_elimination.hpp"
 #include "lup_decomposition.hpp"
+#include "gaussian_elimination.hpp"
 #include "matrix.hpp"
 #include "matrix_helpers.hpp"
 #include "test_helpers.hpp"
@@ -41,7 +41,7 @@ void pivotWorks() {
   Matrix P;
   pivot(A, P);
   Matrix PA = P * A;
-  assertMatrixNear(PA, PA_expected);
+  ASSERT_MATRIX_NEAR(PA, PA_expected);
 }
 
 void luDecompositionObeysDefinition() {
@@ -56,7 +56,7 @@ void luDecompositionObeysDefinition() {
     if (result) {
       successCount++;
       Matrix LU = L * U;
-      assertMatrixNear(A, LU, 1e-2);
+      ASSERT_MATRIX_NEAR_TOL(A, LU, 1e-2);
     }
   }
   ASSERT(successCount > 0);
@@ -76,7 +76,7 @@ void lupDecompositionObeysDefinition() {
       successCount++;
       Matrix LU = L * U;
       Matrix PA = P * A;
-      assertMatrixNear(PA, LU, 1e-2);
+      ASSERT_MATRIX_NEAR_TOL(PA, LU, 1e-2);
     }
   }
   ASSERT(successCount > 0);
@@ -112,7 +112,7 @@ void solveLWorks() {
     Matrix b = L * x;
     Matrix b_result = b;
     solveL(L, b_result);
-    assertMatrixNear(x, b_result, 1e-2);
+    ASSERT_MATRIX_NEAR_TOL(x, b_result, 1e-2);
   }
 }
 
@@ -124,7 +124,7 @@ void solveUWorks() {
     Matrix b = U * x;
     Matrix b_result = b;
     solveU(U, b_result);
-    assertMatrixNear(x, b_result, 1e-2);
+    ASSERT_MATRIX_NEAR_TOL(x, b_result, 1e-2);
   }
 }
 
@@ -140,7 +140,7 @@ void solveLUPWorks() {
     Matrix L, U, P;
     lupDecomposition(A, L, U, P);
     solveLUP(L, U, P, b_result);
-    assertMatrixNear(x, b_result, 1e-2);
+    ASSERT_MATRIX_NEAR_TOL(x, b_result, 1e-2);
   }
 }
 void lupDeterminantWorks() {

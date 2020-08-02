@@ -20,10 +20,8 @@ void nonSingularMatricesWork() {
     // identity matrix.
     Matrix AAI = A * AI;
     Matrix I = identity(width);
-    assertMatrixNear(AAI, I);
+    ASSERT_MATRIX_NEAR(AAI, I);
   }
 }
 
-int main() {
-  nonSingularMatricesWork();
-}
+int main() { nonSingularMatricesWork(); }
