@@ -205,6 +205,14 @@ const Matrix Matrix::transposeROI() const {
                           0, 0, true));
 }
 
+Matrix Matrix::row(const size_t &v) {
+  return Matrix(MatrixROI(0, v, this->width(), 1, this, 0, 0, false));
+}
+const Matrix Matrix::row(const size_t &v) const {
+  return Matrix(MatrixROI(0, v, this->width(), 1, const_cast<Matrix *>(this), 0,
+                          0, false));
+}
+
 std::ostream &operator<<(std::ostream &os, const Matrix &mat) {
   for (size_t y = 0; y < mat.height(); y++) {
     os << "[ ";

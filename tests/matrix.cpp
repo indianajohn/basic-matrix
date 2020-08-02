@@ -40,7 +40,6 @@ void initWorks() {
 void initWithValue() {
   std::vector<std::vector<double>> vec = {{1, 2, 4}, {3.5, 4.2, 1.2}};
   Matrix test(vec);
-  std::cout << test << std::endl;
   ASSERT_EQ(test.width(), 3);
   ASSERT_EQ(test.height(), 2);
   Matrix test2({{2.320359359, 9.2, 0.3}});
@@ -248,6 +247,15 @@ void equalsWorks() {
       {9, 9, 11, 12}, {10, 10, 63, 64}, {7, 18, 9, 10}, {12, 49, 19, 19}};
   assertMatrixNear(mat, expected);
 }
+
+void rowWorks() {
+  Matrix mat = {
+      {1, 4, 11, 12}, {4, 59, 63, 64}, {7, 18, 9, 10}, {12, 49, 19, 19}};
+  assertMatrixNear(mat.row(0), {1, 4, 11, 12});
+  assertMatrixNear(mat.row(1), {4, 59, 63, 64});
+  assertMatrixNear(mat.row(2), {7, 18, 9, 10});
+  assertMatrixNear(mat.row(3), {12, 49, 19, 19});
+}
 int main() {
   emptyMatrix();
   initWorks();
@@ -260,4 +268,5 @@ int main() {
   detWorksOn3x3();
   detWorksOn4x4();
   equalsWorks();
+  rowWorks();
 }

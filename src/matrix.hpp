@@ -178,6 +178,11 @@ public:
   /// but is transposed compared to the original.
   Matrix transposeROI();
   const Matrix transposeROI() const;
+
+  /// Accessors for row ROIs
+  Matrix row(const size_t &v);
+  const Matrix row(const size_t &v) const;
+
   double norm() const;
 
   // Operators
@@ -248,14 +253,12 @@ public:
   // Wrap another matrix.
   void addROI(MatrixROI roi_to_add);
 
-  const double* data() const {
-    return &m_storage[0];
-  }
+  const double *data() const { return &m_storage[0]; }
 
   /// A pointer to the storage. This is only guaranteed to
   /// actually point to the values of the matrix if the
   /// matrix storage is contiguous.
-  double* data();
+  double *data();
 
   /// Is the matrix storage contiguous?
   bool contiguous() const;
