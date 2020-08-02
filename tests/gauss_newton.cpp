@@ -51,7 +51,7 @@ void testNonlinearSystem() {
     Matrix row = randomMatrix(problem.inputs.num_params, 1, -10.0, 10.0);
     problem.inputs.X.row(i) = row;
     Matrix y;
-    nonlinearFunction(theta_gt, problem.inputs.X.row(i), y);
+    nonlinearFunction(theta_gt, problem.inputs.X.row(i).transposeROI(), y);
     problem.inputs.y(0, i) = y(0, 0);
   }
   problem.inputs.function = &nonlinearFunction;

@@ -25,22 +25,22 @@ struct OptimizationProblem {
 
     /// A cost function. If none is given, ||y - f(x)|| is used. The signature
     /// is:
-    /// double targetFunction(const Matrix& theta, const std::vector<Matrix>& x,
+    /// double targetFunction(const Matrix& theta, const Matrix& x,
     /// const Matrix& y);
-    std::optional<std::function<double(
-        const Matrix &, const std::vector<Matrix> &, const Matrix &)>>
+    std::optional<
+        std::function<double(const Matrix &, const Matrix &, const Matrix &)>>
         cost_function;
 
     /// An analytical Jacobian. If not provided, the Jacobian will be estimated
     /// numerically. The format is:
     /// double targetFunction(const Matrix& theta, const Matrix& x, const
     /// Matrix& y, Matrix& J);
-    std::optional<std::function<void(
-        const Matrix &, const std::vector<Matrix> &, const Matrix &, Matrix &)>>
+    std::optional<std::function<void(const Matrix &, const Matrix &,
+                                     const Matrix &, Matrix &)>>
         jacobian;
 
-    /// The function inputs
-    std::vector<Matrix> x;
+    /// The function inputs. Rows are data points, height is #/data samples.
+    Matrix X;
 
     /// The function outputs
     Matrix y;
@@ -104,5 +104,5 @@ void estimateJacobian(const OptimizationProblem &problem, Matrix &J,
 Matrix
 evaluate(const std::function<void(const Matrix &, const Matrix &, Matrix &)>
              function,
-         const Matrix &theta, const std::vector<Matrix> x);
+         const Matrix &theta, const Matrix X);
 }; // namespace basic_matrix

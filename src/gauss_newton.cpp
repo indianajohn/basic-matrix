@@ -14,7 +14,7 @@ void gaussNewton(OptimizationProblem &problem) {
     }
   }
   if (problem.inputs.jacobian.has_value()) {
-    problem.inputs.jacobian.value()(problem.outputs.theta, problem.inputs.x,
+    problem.inputs.jacobian.value()(problem.outputs.theta, problem.inputs.X,
                                     problem.inputs.y, J);
   } else {
     estimateJacobian(problem, J);
@@ -22,12 +22,12 @@ void gaussNewton(OptimizationProblem &problem) {
   for (size_t step = 0; step < problem.config.max_iterations; step++) {
     problem.outputs.num_iterations++;
     Matrix y = evaluate(problem.inputs.function, problem.outputs.theta,
-                        problem.inputs.x);
+                        problem.inputs.X);
     Matrix r = problem.inputs.y - y;
     double cost = 0;
     if (problem.inputs.cost_function.has_value()) {
       cost = problem.inputs.cost_function.value()(
-          problem.outputs.theta, problem.inputs.x, problem.inputs.y);
+          problem.outputs.theta, problem.inputs.X, problem.inputs.y);
     } else {
       cost = r.norm();
     }
