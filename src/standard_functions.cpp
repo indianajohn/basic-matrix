@@ -58,4 +58,13 @@ void LogisticRegressionObjective::eval(const Matrix &theta, const Matrix &X,
   in_place_sigmoid(out_y);
 }
 
+void LogisticRegressionObjective::gradient(const Matrix &theta, const Matrix &X,
+                                           const Matrix &y, Matrix &J) {
+  double m = static_cast<double>(X.height());
+  Matrix y_estimated;
+  this->eval(theta, X, y_estimated);
+  Matrix residual = y_estimated - y;
+  J = (1 / m) * X.transposeROI() * residual + (this->lambda / m) * theta;
+}
+
 }; // namespace basic_matrix

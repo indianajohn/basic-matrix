@@ -72,6 +72,7 @@ void testSigmoid() {
     }
   }
 }
+
 void testLogisticRegressionObjective() {
   Matrix Xy =
       loadFromFile("tests/logistic_regression_linear_decision_boundary.txt");
@@ -95,6 +96,27 @@ void testLogisticRegressionObjective() {
       ASSERT_NEAR(y_predicted(u, v), 0.5);
     }
   }
+  Matrix J;
+  fctn.gradient(theta, X, y, J);
+  Matrix J_expected({-0.1, -12.009217, -11.262842});
+  J_expected = J_expected.transpose();
+  assertMatrixNear(J, J_expected, 1e-4);
+}
+
+void testLogisticRegressionConvergence() {
+  Matrix Xy =
+      loadFromFile("tests/logistic_regression_linear_decision_boundary.txt");
+  Matrix X(3, Xy.height());
+  Matrix x_first_two_columns(MatrixROI(1, 0, 2, Xy.height(), &X));
+  x_first_two_columns = Matrix(MatrixROI(0, 0, 2, Xy.height(), &Xy));
+  for (size_t i = 0; i < Xy.height(); i++) {
+    X(0, i) = 1;
+  }
+  Matrix y = Matrix(MatrixROI(2, 0, 1, Xy.height(), &Xy));
+  Matrix theta(1, 3);
+  double lambda = 0.;
+  Matrix E_out(1, Xy.height());
+  LogisticRegressionObjective fctn;
 }
 
 int main(int argc, char **argv) {

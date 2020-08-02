@@ -31,6 +31,10 @@ struct LogisticRegressionObjective {
   // Evaluate y for the model.
   void eval(const Matrix &theta, const Matrix &X, Matrix &out_y);
 
+  /// Evaluate the gradient for the model.
+  void gradient(const Matrix &theta, const Matrix &X, const Matrix &y,
+                Matrix &J);
+
   /// regularization weight.
   double lambda = 0.0;
 };
