@@ -174,6 +174,11 @@ public:
   Matrix &operator=(const Matrix &mat);
   Matrix transpose() const;
 
+  /// Leaving storage intact, change the width and height of
+  /// a matrix. The product of width and height must be the
+  /// same after the reshape operation.
+  void reshape(const size_t &new_width, const size_t &new_height);
+
   /// An ROI that points to the original matrix storage
   /// but is transposed compared to the original.
   Matrix transposeROI();

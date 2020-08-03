@@ -266,6 +266,15 @@ void colWorks() {
   ASSERT_MATRIX_NEAR(mat.col(3), Matrix({12, 64, 10, 19}).transposeROI());
 }
 
+void reshapeWorks() {
+  Matrix mat = {
+      {1, 4, 11, 12}, {4, 59, 63, 64}, {7, 18, 9, 10}, {12, 49, 19, 19}};
+  Matrix mat_expected = {{1, 4, 11, 12, 4, 59, 63, 64},
+                         {7, 18, 9, 10, 12, 49, 19, 19}};
+  mat.reshape(8, 2);
+  ASSERT_MATRIX_NEAR(mat, mat_expected);
+}
+
 int main() {
   emptyMatrix();
   initWorks();
@@ -280,4 +289,5 @@ int main() {
   equalsWorks();
   rowWorks();
   colWorks();
+  reshapeWorks();
 }

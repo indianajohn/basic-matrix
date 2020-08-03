@@ -312,4 +312,18 @@ double *Matrix::data() { return &m_storage[0]; }
 
 bool Matrix::contiguous() const { return (m_rois.size() == 0); }
 
+void Matrix::reshape(const size_t &new_width, const size_t &new_height) {
+  if (new_width * new_height != this->width() * this->height()) {
+    throw std::runtime_error(
+        std::to_string(new_width) + " x" + std::to_string(new_height) +
+        "new_w x new_h != w x h" + std::to_string(this->width()) + "," +
+        std::to_string(this->height()) + "in reshape.");
+  }
+  if (m_rois.size() > 0) {
+    throw std::runtime_error("Can't reshape a matrix mapping.");
+  }
+  this->m_width = new_width;
+  this->m_height = new_height;
+}
+
 }; // namespace basic_matrix
