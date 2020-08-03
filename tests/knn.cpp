@@ -21,6 +21,18 @@ void knnWorks() {
   ASSERT_EQ(y_train.height(), 5000);
   KNNClassifier classifier(X_train, y_train);
   Matrix y_result = classifier.classify(X_test);
+  double correct = 0.;
+  double total = 0.;
+  for (size_t i = 0; i < y_result.height(); i++) {
+    if (y_result(0, i) == y_test(0, i)) {
+      correct += 1.0;
+    }
+    total += 1.0;
+  }
+  double accuracy = correct / total;
+  // For this dataset, expect 0.274
+  ASSERT(accuracy > 0.26);
+  std::cout << "Accuracy=" << correct / total << std::endl;
 }
 
 int main(int argc, char **argv) { knnWorks(); }
