@@ -256,6 +256,16 @@ void rowWorks() {
   ASSERT_MATRIX_NEAR(mat.row(2), Matrix({7, 18, 9, 10}));
   ASSERT_MATRIX_NEAR(mat.row(3), Matrix({12, 49, 19, 19}));
 }
+
+void colWorks() {
+  Matrix mat = {
+      {1, 4, 11, 12}, {4, 59, 63, 64}, {7, 18, 9, 10}, {12, 49, 19, 19}};
+  ASSERT_MATRIX_NEAR(mat.col(0), Matrix({1, 4, 7, 12}).transposeROI());
+  ASSERT_MATRIX_NEAR(mat.col(1), Matrix({4, 59, 18, 49}).transposeROI());
+  ASSERT_MATRIX_NEAR(mat.col(2), Matrix({11, 63, 9, 19}).transposeROI());
+  ASSERT_MATRIX_NEAR(mat.col(3), Matrix({12, 64, 10, 19}).transposeROI());
+}
+
 int main() {
   emptyMatrix();
   initWorks();
@@ -269,4 +279,5 @@ int main() {
   detWorksOn4x4();
   equalsWorks();
   rowWorks();
+  colWorks();
 }

@@ -213,6 +213,14 @@ const Matrix Matrix::row(const size_t &v) const {
                           0, false));
 }
 
+Matrix Matrix::col(const size_t &u) {
+  return Matrix(MatrixROI(u, 0, 1, this->height(), this, 0, 0, false));
+}
+const Matrix Matrix::col(const size_t &u) const {
+  return Matrix(MatrixROI(u, 0, 1, this->height(), const_cast<Matrix *>(this),
+                          0, 0, false));
+}
+
 std::ostream &operator<<(std::ostream &os, const Matrix &mat) {
   for (size_t y = 0; y < mat.height(); y++) {
     os << "[ ";

@@ -179,9 +179,11 @@ public:
   Matrix transposeROI();
   const Matrix transposeROI() const;
 
-  /// Accessors for row ROIs
+  /// Accessors for row/column ROIs
   Matrix row(const size_t &v);
   const Matrix row(const size_t &v) const;
+  Matrix col(const size_t &v);
+  const Matrix col(const size_t &v) const;
 
   double norm() const;
 
