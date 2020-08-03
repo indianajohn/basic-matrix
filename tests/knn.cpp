@@ -20,7 +20,7 @@ void knnWorks() {
   ASSERT_EQ(y_train.width(), 1);
   ASSERT_EQ(y_train.height(), 5000);
   KNNClassifier classifier(X_train, y_train);
-  Matrix y_result = classifier.classify(X_test);
+  Matrix y_result = classifier.classify(X_test, 5);
   double correct = 0.;
   double total = 0.;
   for (size_t i = 0; i < y_result.height(); i++) {
@@ -30,9 +30,8 @@ void knnWorks() {
     total += 1.0;
   }
   double accuracy = correct / total;
-  // For this dataset, expect 0.274
-  ASSERT(accuracy > 0.26);
-  std::cout << "Accuracy=" << correct / total << std::endl;
+  // For this dataset, expect 0.284
+  ASSERT(accuracy > 0.28);
 }
 
 int main(int argc, char **argv) { knnWorks(); }

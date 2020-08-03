@@ -9,7 +9,7 @@ public:
   /// classify rows of test_data, returning the class
   /// for each test data row on the corresponding row
   /// in the return value.
-  Matrix classify(const Matrix &test_data);
+  Matrix classify(const Matrix &test_data, const size_t &k = 1);
 
 private:
   Matrix m_X_train;
