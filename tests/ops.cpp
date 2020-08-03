@@ -53,6 +53,40 @@ void addWorks() {
     mat1 += mat2;
     ASSERT_MATRIX_NEAR(expected, mat1);
   }
+  {
+    Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+    Matrix mat2({{7.0, 8.0, 9.0}});
+    Matrix expected({{8.0, 10.0, 12.0}, {11.0, 13.0, 15.0}});
+    Matrix result = mat1 + mat2;
+    ASSERT_MATRIX_NEAR(expected, result);
+  }
+  {
+    Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+    Matrix mat2({{7.0, 8.0, 9.0}});
+    Matrix expected({{8.0, 10.0, 12.0}, {11.0, 13.0, 15.0}});
+    Matrix result = mat2 + mat1;
+    ASSERT_MATRIX_NEAR(expected, result);
+  }
+  {
+    Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+    mat1 = mat1.transpose();
+    Matrix mat2({{7.0, 8.0, 9.0}});
+    mat2 = mat2.transpose();
+    Matrix expected({{8.0, 10.0, 12.0}, {11.0, 13.0, 15.0}});
+    expected = expected.transpose();
+    Matrix result = mat1 + mat2;
+    ASSERT_MATRIX_NEAR(expected, result);
+  }
+  {
+    Matrix mat1({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+    mat1 = mat1.transpose();
+    Matrix mat2({{7.0, 8.0, 9.0}});
+    mat2 = mat2.transpose();
+    Matrix expected({{8.0, 10.0, 12.0}, {11.0, 13.0, 15.0}});
+    expected = expected.transpose();
+    Matrix result = mat2 + mat1;
+    ASSERT_MATRIX_NEAR(expected, result);
+  }
 }
 
 void subtractWorks() {

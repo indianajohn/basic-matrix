@@ -206,17 +206,48 @@ double Matrix::norm() const {
 }
 
 const Matrix Matrix::operator+(const Matrix &other) const {
-  Matrix mat(other);
-  if (width() != other.width() || height() != other.height()) {
+  Matrix mat;
+  // TODO: optimize broadcast sums for caching.
+  if (this->width() == other.width() && this->height() == other.height()) {
+    mat = other;
+    for (size_t x = 0; x < mat.width(); x++) {
+      for (size_t y = 0; y < mat.height(); y++) {
+        mat(x, y) += operator()(x, y);
+      }
+    }
+  } else if (this->height() == other.height() && this->width() == 1) {
+    mat = other;
+    for (size_t x = 0; x < mat.width(); x++) {
+      for (size_t y = 0; y < mat.height(); y++) {
+        mat(x, y) += operator()(0, y);
+      }
+    }
+  } else if (this->width() == other.width() && this->height() == 1) {
+    mat = other;
+    for (size_t x = 0; x < mat.width(); x++) {
+      for (size_t y = 0; y < mat.height(); y++) {
+        mat(x, y) += operator()(x, 0);
+      }
+    }
+  } else if (this->height() == other.height() && other.width() == 1) {
+    mat = *this;
+    for (size_t x = 0; x < mat.width(); x++) {
+      for (size_t y = 0; y < mat.height(); y++) {
+        mat(x, y) += other(0, y);
+      }
+    }
+  } else if (this->width() == other.width() && other.height() == 1) {
+    mat = *this;
+    for (size_t x = 0; x < mat.width(); x++) {
+      for (size_t y = 0; y < mat.height(); y++) {
+        mat(x, y) += other(x, 0);
+      }
+    }
+  } else {
     throw std::runtime_error(
         "Tried to add a " + std::to_string(width()) + "x" +
         std::to_string(height()) + " to a " + std::to_string(mat.width()) +
         "x" + std::to_string(mat.height()) + "; dimensions must match.");
-  }
-  for (size_t x = 0; x < mat.width(); x++) {
-    for (size_t y = 0; y < mat.height(); y++) {
-      mat(x, y) += operator()(x, y);
-    }
   }
   return mat;
 }
