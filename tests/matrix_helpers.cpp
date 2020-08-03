@@ -2,21 +2,34 @@
 #include "matrix.hpp"
 #include <iostream>
 #include <random>
+#include <sstream>
 
 using namespace basic_matrix;
 
 bool matrixNear(const Matrix &mat_result, const Matrix &mat_expected,
                 const double &tol) {
-  ASSERT_EQ(mat_result.width(), mat_expected.width());
-  ASSERT_EQ(mat_result.height(), mat_expected.height());
   bool near = true;
+  if (mat_result.width() != mat_expected.width()) {
+    std::cerr << "Matrices have different width" << std::endl;
+    near = false;
+  }
+  if (mat_result.height() != mat_expected.height()) {
+    std::cerr << "Matrices have different height " << std::endl;
+    near = false;
+  }
+  std::stringstream stream;
   for (size_t x = 0; x < mat_result.width(); x++) {
     for (size_t y = 0; y < mat_result.height(); y++) {
       if (fabs(mat_result(x, y) - mat_expected(x, y)) > tol) {
         near = false;
+        stream << "(" << x << "," << y << ")";
       }
     }
   }
+  if (stream.str().size() > 0) {
+    std::cerr << "Elements differ:" << stream.str() << std::endl;
+  }
+
   if (!near) {
     return false;
   }
