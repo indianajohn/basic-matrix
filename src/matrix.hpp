@@ -179,6 +179,12 @@ public:
   /// same after the reshape operation.
   void reshape(const size_t &new_width, const size_t &new_height);
 
+  /// Sum all rows and save the result in a single column matrix.
+  Matrix sumRows() const;
+
+  /// Sum all columns and save the result in a single row matrix.
+  Matrix sumCols() const;
+
   /// An ROI that points to the original matrix storage
   /// but is transposed compared to the original.
   Matrix transposeROI();

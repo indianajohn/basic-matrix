@@ -326,4 +326,20 @@ void Matrix::reshape(const size_t &new_width, const size_t &new_height) {
   this->m_height = new_height;
 }
 
+Matrix Matrix::sumRows() const {
+  Matrix result(this->width(), 1);
+  for (size_t i = 0; i < this->height(); i++) {
+    result += this->row(i);
+  }
+  return result;
+}
+
+Matrix Matrix::sumCols() const {
+  Matrix result(1, this->height());
+  for (size_t i = 0; i < this->width(); i++) {
+    result += this->col(i);
+  }
+  return result;
+}
+
 }; // namespace basic_matrix

@@ -275,6 +275,22 @@ void reshapeWorks() {
   ASSERT_MATRIX_NEAR(mat, mat_expected);
 }
 
+void sumRowsWorks() {
+  Matrix mat = {
+      {1, 4, 11, 12}, {4, 59, 63, 64}, {7, 18, 9, 10}, {12, 49, 19, 19}};
+  Matrix mat_expected = {24, 130, 102, 105};
+  Matrix row_sum = mat.sumRows();
+  ASSERT_MATRIX_NEAR(row_sum, mat_expected);
+}
+
+void sumColsWorks() {
+  Matrix mat = {
+      {1, 4, 11, 12}, {4, 59, 63, 64}, {7, 18, 9, 10}, {12, 49, 19, 19}};
+  Matrix mat_expected = Matrix({28, 190, 44, 99}).transpose();
+  Matrix col_sum = mat.sumCols();
+  ASSERT_MATRIX_NEAR(col_sum, mat_expected);
+}
+
 int main() {
   emptyMatrix();
   initWorks();
@@ -290,4 +306,6 @@ int main() {
   rowWorks();
   colWorks();
   reshapeWorks();
+  sumRowsWorks();
+  sumColsWorks();
 }
