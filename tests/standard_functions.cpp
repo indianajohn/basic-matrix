@@ -1,7 +1,7 @@
 #include "standard_functions.hpp"
-#include "gauss_newton.hpp"
 #include "io.hpp"
 #include "matrix_helpers.hpp"
+#include "naive_gradient_descent.hpp"
 using namespace basic_matrix;
 
 void testExp() {
@@ -114,13 +114,13 @@ void testLogisticRegressionConvergence() {
     X(0, i) = 1;
   }
   Matrix y = Matrix(MatrixROI(2, 0, 1, Xy.height(), &Xy));
-  double lambda = 0.;
   Matrix E_out(1, Xy.height());
   LogisticRegressionObjective fctn;
+  fctn.lambda = 0.0;
   OptimizationProblem problem;
   problem.inputs.X = X;
   problem.inputs.y = y;
-  problem.config.max_iterations = 100;
+  problem.config.max_iterations = 10000;
   problem.inputs.num_params = X.width();
   problem.outputs.theta = Matrix(1, problem.inputs.num_params);
   auto cost_function = std::bind(&LogisticRegressionObjective::energy, &fctn,
@@ -135,8 +135,22 @@ void testLogisticRegressionConvergence() {
                                  std::placeholders::_1, std::placeholders::_2,
                                  std::placeholders::_3);
   problem.inputs.vector_function = eval_function;
-  Matrix y_predicted(1, Xy.height());
-  // TODO: write some type of gradient descent.
+  double energy_before = fctn.energy(problem.outputs.theta, X, y);
+  naiveGradientDescent(problem, 0.001);
+  double energy_after = fctn.energy(problem.outputs.theta, X, y);
+  Matrix y_predicted;
+  fctn.eval(problem.outputs.theta, problem.inputs.X, y_predicted);
+  double correct = 0.0;
+  double total = 0.0;
+  for (int i = 0; i < y.height(); i++) {
+    bool gt_result = y(0, i) > 0.5;
+    bool predicted_result = y_predicted(0, i) > 0.5;
+    if (gt_result == predicted_result) {
+      correct++;
+    }
+    total++;
+  }
+  ASSERT(correct / total > 0.8);
 }
 
 int main(int argc, char **argv) {

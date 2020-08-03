@@ -50,7 +50,7 @@ double LogisticRegressionObjective::energy(const Matrix &theta, const Matrix &X,
   in_place_sigmoid(h);
   Matrix E_out = (1.0 / m) * (-y.transposeROI() * log(h) -
                               (1.0 - y).transposeROI() * log(1.0 - h));
-  // E_out += lambda / (2.0 * m) * theta.transposeROI() * theta;
+  E_out += lambda / (2.0 * m) * theta.transposeROI() * theta;
   return E_out(0, 0);
 }
 
