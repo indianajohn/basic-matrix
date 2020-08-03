@@ -7,6 +7,13 @@
     body return output;                                                        \
   }
 
+#define IMPL_UTIL_FUNC_ARG(name, body)                                         \
+  void in_place_##name(Matrix &output, const double &arg) body Matrix name(    \
+      const Matrix &input, const double &arg) {                                \
+    Matrix output = input;                                                     \
+    body return output;                                                        \
+  }
+
 namespace basic_matrix {
 IMPL_UTIL_FUNC(exp, {
   for (size_t v = 0; v < output.height(); v++) {
@@ -20,6 +27,14 @@ IMPL_UTIL_FUNC(log, {
   for (size_t v = 0; v < output.height(); v++) {
     for (size_t u = 0; u < output.width(); u++) {
       output(u, v) = std::log(output(u, v));
+    }
+  }
+})
+
+IMPL_UTIL_FUNC_ARG(pow, {
+  for (size_t v = 0; v < output.height(); v++) {
+    for (size_t u = 0; u < output.width(); u++) {
+      output(u, v) = powf(output(u, v), arg);
     }
   }
 })
@@ -68,6 +83,25 @@ void LogisticRegressionObjective::gradient(const Matrix &theta, const Matrix &X,
   Matrix residual = y_estimated - y;
   J = (1 / m) * X.transposeROI() * residual + (this->lambda / m) * theta;
   J = J.transpose();
+}
+
+Matrix mapFeatures(const Matrix &X1, const Matrix &X2, const size_t N) {
+  size_t eventual_size = 0;
+  for (size_t i = 1; i <= N + 1; i++) {
+    eventual_size += i;
+  }
+  Matrix out(eventual_size, X1.height());
+  out.col(0) += 1;
+  size_t out_idx = 1;
+  for (int i = 1; i <= N; i++) {
+    for (int j = 0; j <= i; j++) {
+      for (int k = 0; k < X1.height(); k++) {
+        out(out_idx, k) = powf(X1(0, k), i - j) * powf(X2(0, k), j);
+      }
+      out_idx++;
+    }
+  }
+  return out;
 }
 
 }; // namespace basic_matrix
