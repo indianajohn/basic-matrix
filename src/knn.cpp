@@ -28,7 +28,6 @@ Matrix KNNClassifier::classify(const Matrix &X) {
     }
     result(0, i_test) = this->m_y_train(0, min_training_idx);
   }
-  std::cout << "Done." << std::endl;
   return result;
 }
 }; // namespace basic_matrix
