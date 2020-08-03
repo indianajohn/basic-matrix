@@ -40,18 +40,20 @@ IMPL_UTIL_FUNC(sigmoid, {
   // = 1 / (1+exp(-input))
 })
 
-void LogisticRegressionObjective::energy(const Matrix &theta, const Matrix &X,
-                                         const Matrix &y, Matrix &E_out) {
+double LogisticRegressionObjective::energy(const Matrix &theta, const Matrix &X,
+                                           const Matrix &y) {
   // h = sigmoid(X*theta)
   // J = 1/m * (-y'*log(h) - (1 - y)'*log(1-h));
   // J += lambda / (2*m) * theta'*theta
   Matrix h = X * theta;
   double m = static_cast<double>(X.height());
   in_place_sigmoid(h);
-  E_out = (1.0 / m) * (-y.transposeROI() * log(h) -
-                       (1.0 - y).transposeROI() * log(1.0 - h));
-  E_out += lambda / (2.0 * m) * theta.transposeROI() * theta;
+  Matrix E_out = (1.0 / m) * (-y.transposeROI() * log(h) -
+                              (1.0 - y).transposeROI() * log(1.0 - h));
+  // E_out += lambda / (2.0 * m) * theta.transposeROI() * theta;
+  return E_out(0, 0);
 }
+
 void LogisticRegressionObjective::eval(const Matrix &theta, const Matrix &X,
                                        Matrix &out_y) {
   out_y = X * theta;
@@ -65,6 +67,7 @@ void LogisticRegressionObjective::gradient(const Matrix &theta, const Matrix &X,
   this->eval(theta, X, y_estimated);
   Matrix residual = y_estimated - y;
   J = (1 / m) * X.transposeROI() * residual + (this->lambda / m) * theta;
+  J = J.transpose();
 }
 
 }; // namespace basic_matrix

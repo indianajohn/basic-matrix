@@ -13,15 +13,17 @@ void estimateJacobian(const OptimizationProblem &problem, Matrix &J,
   }
   Matrix y0(1, problem.inputs.y.height());
   Matrix y1(1, problem.inputs.y.height());
+  // TODO: implement this for vector evaluator. The unchecked
+  // value() here is not safe.
   for (size_t x_i = 0; x_i < problem.outputs.theta.height(); x_i++) {
     for (size_t y_i = 0; y_i < problem.inputs.X.height(); y_i++) {
       Matrix theta_perturbed = problem.outputs.theta;
       theta_perturbed(0, x_i) -= epsilon;
-      problem.inputs.function(theta_perturbed,
-                              problem.inputs.X.row(y_i).transposeROI(), y0);
+      problem.inputs.function.value()(
+          theta_perturbed, problem.inputs.X.row(y_i).transposeROI(), y0);
       theta_perturbed(0, x_i) += 2 * epsilon;
-      problem.inputs.function(theta_perturbed,
-                              problem.inputs.X.row(y_i).transposeROI(), y1);
+      problem.inputs.function.value()(
+          theta_perturbed, problem.inputs.X.row(y_i).transposeROI(), y1);
       J(x_i, y_i) = (y1(0, 0) - y0(0, 0)) / (2.0 * epsilon);
     }
   }

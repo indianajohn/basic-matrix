@@ -13,22 +13,33 @@ void gaussNewton(OptimizationProblem &problem) {
       problem.outputs.theta(0, i) = 1.0;
     }
   }
-  if (problem.inputs.jacobian.has_value()) {
-    problem.inputs.jacobian.value()(problem.outputs.theta, problem.inputs.X,
-                                    problem.inputs.y, J);
-  } else {
-    estimateJacobian(problem, J);
-  }
   for (size_t step = 0; step < problem.config.max_iterations; step++) {
+    if (problem.inputs.jacobian.has_value()) {
+      problem.inputs.jacobian.value()(problem.outputs.theta, problem.inputs.X,
+                                      problem.inputs.y, J);
+    } else {
+      estimateJacobian(problem, J);
+    }
     problem.outputs.num_iterations++;
-    Matrix y = evaluate(problem.inputs.function, problem.outputs.theta,
-                        problem.inputs.X);
+    Matrix y;
+    if (problem.inputs.function.has_value()) {
+      y = evaluate(problem.inputs.function.value(), problem.outputs.theta,
+                   problem.inputs.X);
+    } else if (problem.inputs.vector_function.has_value()) {
+      problem.inputs.vector_function.value()(problem.outputs.theta,
+                                             problem.inputs.X, y);
+    } else {
+      throw std::runtime_error(
+          "Optimization problem needs either a scalar or vector evaluator.");
+    }
     Matrix r = problem.inputs.y - y;
     double cost = 0;
     if (problem.inputs.cost_function.has_value()) {
       cost = problem.inputs.cost_function.value()(
           problem.outputs.theta, problem.inputs.X, problem.inputs.y);
+      r = Matrix({cost});
     } else {
+      r = problem.inputs.y - y;
       cost = r.norm();
     }
     if (cost < problem.config.cost_threshold) {

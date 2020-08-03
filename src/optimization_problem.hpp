@@ -18,10 +18,21 @@ struct OptimizationProblem {
     ///
     /// void targetFunction(const Matrix& theta, const Matrix& x, Matrix& y);
     ///
-    /// The function uses theta and x to calculate y. If y is already a
-    /// x.width() x 1 matrix, then the storage is reused. Otherwise the
-    /// matrix is discarded and recreated and new storage is initialized.
-    std::function<void(const Matrix &, const Matrix &, Matrix &)> function;
+    /// The function uses theta and x to calculate a single row of y. If y
+    /// is already a x.width() x 1 matrix, then the storage is reused.
+    /// Otherwise the matrix is discarded and recreated and new storage is
+    /// initialized.
+    std::optional<std::function<void(const Matrix &, const Matrix &, Matrix &)>>
+        function;
+
+    /// Vectorized evaluation function.
+    ///
+    /// void targetFunction(const Matrix& theta, const Matrix& X_vector, Matrix&
+    /// y_vector);
+    ///
+    /// Computes all y_vector elements given theta and X_vector.
+    std::optional<std::function<void(const Matrix &, const Matrix &, Matrix &)>>
+        vector_function;
 
     /// A cost function. If none is given, ||y - f(x)|| is used. The signature
     /// is:

@@ -26,8 +26,7 @@ struct LogisticRegressionObjective {
   /// @param y - output data.
   /// @param E_out - output energy.
   /// @param lambda - regularization weight.
-  void energy(const Matrix &theta, const Matrix &X, const Matrix &y,
-              Matrix &E_out);
+  double energy(const Matrix &theta, const Matrix &X, const Matrix &y);
   // Evaluate y for the model.
   void eval(const Matrix &theta, const Matrix &X, Matrix &out_y);
 
