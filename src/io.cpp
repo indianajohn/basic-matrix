@@ -29,6 +29,30 @@ std::vector<double> parseNumberLine(const std::string &line) {
   }
   return result;
 }
+
+bool system_is_big_endian(void) {
+  union {
+    uint32_t i;
+    char c[4];
+  } bint = {0x01020304};
+
+  return bint.c[0] == 1;
+}
+
+float read_bytes(std::ifstream &stream, bool switch_byte_order) {
+  char bytes[4];
+  stream.read(bytes, 4);
+  if (switch_byte_order) {
+    for (size_t i = 0; i < 2; i++) {
+      char temp = bytes[i];
+      bytes[i] = bytes[3 - i];
+      bytes[3 - i] = temp;
+    }
+  }
+  float val;
+  memcpy(&val, &bytes, sizeof(bytes));
+  return val;
+}
 }; // namespace
 
 Matrix parseFromString(const std::string &str) {
@@ -99,13 +123,77 @@ void writeToFile(const std::string &path, const Matrix &mat) {
 }
 
 void writeToPfm(const std::string &path, const Matrix &mat) {
-  // TODO
+  std::ofstream write_stream(path);
+  write_stream << "Pf";
+  write_stream.put(0x0a);
+  write_stream << std::to_string(mat.width()) << " "
+               << std::to_string(mat.height());
+  write_stream.put(0x0a);
+  write_stream << "-1.0";
+  write_stream.put(0x0a);
+  for (size_t i = 0; i < mat.height(); i++) {
+    for (size_t j = 0; j < mat.width(); j++) {
+      const float &val = mat(j, i);
+      write_stream.write(reinterpret_cast<const char *>(&val), sizeof(float));
+    }
+  }
   return;
 }
 
 Matrix loadFromPfm(const std::string &str) {
-  Matrix loaded_matrix;
-  // TODO
+  std::ifstream read_stream(str);
+  std::string type, wh, byte_order;
+  try {
+    std::getline(read_stream, type);
+    std::getline(read_stream, wh);
+    std::getline(read_stream, byte_order);
+  } catch (...) {
+    throw std::runtime_error("Header parse error occurred when reading image " +
+                             str);
+  }
+  if (type != "Pf") {
+    throw std::runtime_error("File" + str + "was not of type Pf, instead was " +
+                             type +
+                             "; only type Pf (single-channel portable float "
+                             "map) is supported by this reader.");
+  }
+  size_t delim = wh.find(" ");
+  if (delim == std::string::npos) {
+    throw std::runtime_error("dimensions in header of image " + str +
+                             "could not be parsed: " + wh);
+  }
+  std::string w_string = wh.substr(0, delim);
+  if (delim + 1 >= str.size()) {
+    throw std::runtime_error("dimensions in header of image " + str +
+                             "could not be parsed: " + wh);
+  }
+  std::string h_string = wh.substr(delim + 1);
+  size_t h = 0;
+  size_t w = 0;
+  try {
+    h = std::stoi(h_string);
+    w = std::stoi(w_string);
+  } catch (...) {
+    throw std::runtime_error("dimensions in header of image " + str +
+                             "could not be parsed: " + wh);
+  }
+  float byte_order_float = 1.0;
+  try {
+    byte_order_float = std::stof(byte_order);
+  } catch (...) {
+    throw std::runtime_error("byte order in header of image " + str +
+                             "could not be parsed: " + byte_order);
+  }
+  bool file_is_big_endian = byte_order_float > 0;
+  bool system_big_endian = system_is_big_endian();
+  bool switch_byte_order = (file_is_big_endian && !system_big_endian) ||
+                           (!file_is_big_endian && system_big_endian);
+  Matrix loaded_matrix(w, h);
+  for (size_t i = 0; i < h; i++) {
+    for (size_t j = 0; j < w; j++) {
+      loaded_matrix(j, i) = read_bytes(read_stream, switch_byte_order);
+    }
+  }
   return loaded_matrix;
 }
 
