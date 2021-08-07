@@ -1,3 +1,5 @@
+#pragma once
+#include <filesystem>
 #include <math.h>
 #include <stdexcept>
 #include <string>
@@ -35,3 +37,16 @@
   }
 
 #define ASSERT_NEAR(x, y) ASSERT_TOL(x, y, 1e-9)
+
+namespace basic_matrix {
+/// A self-cleaning temp directory.
+class TempDirectory {
+public:
+  TempDirectory();
+  ~TempDirectory();
+  std::filesystem::path path() const;
+
+private:
+  std::filesystem::path m_path;
+};
+}; // namespace basic_matrix
