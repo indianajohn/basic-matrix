@@ -97,4 +97,16 @@ void writeToFile(const std::string &path, const Matrix &mat) {
     }
   }
 }
+
+void writeToPfm(const std::string &path, const Matrix &mat) {
+  // TODO
+  return;
+}
+
+Matrix loadFromPfm(const std::string &str) {
+  Matrix loaded_matrix;
+  // TODO
+  return loaded_matrix;
+}
+
 }; // namespace basic_matrix

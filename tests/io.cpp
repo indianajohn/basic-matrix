@@ -66,15 +66,28 @@ void testStringWriting() {
 
 void testFileWriting() {
   // Assume path is set
-  std::string path = "temp_mat.txt";
+  TempDirectory temp_dir;
   for (size_t trial = 0; trial < 20; trial++) {
+    std::filesystem::path path = temp_dir.path() / "temp_mat.txt";
     Matrix random_mat = randomMatrix(rand() % 10, rand() % 10, -20.0, 20.0);
     writeToFile(path, random_mat);
     Matrix round_trip = loadFromFile(path);
     if (random_mat.width() > 0 && random_mat.height() > 0) {
       ASSERT_MATRIX_NEAR_TOL(random_mat, round_trip, 1e-4);
     }
-    std::remove(path.c_str());
+  }
+}
+
+void testPfm() {
+  TempDirectory temp_dir;
+  for (size_t trial = 0; trial < 20; trial++) {
+    std::filesystem::path path = temp_dir.path() / "temp_mat.pfm";
+    Matrix random_mat = randomMatrix(rand() % 10, rand() % 10, -20.0, 20.0);
+    writeToPfm(path, random_mat);
+    Matrix round_trip = loadFromPfm(path);
+    if (random_mat.width() > 0 && random_mat.height() > 0) {
+      ASSERT_MATRIX_NEAR_TOL(random_mat, round_trip, 1e-4);
+    }
   }
 }
 
@@ -83,4 +96,5 @@ int main(int argc, char **argv) {
   testFileLoading();
   testStringWriting();
   testFileWriting();
+  testPfm();
 }
