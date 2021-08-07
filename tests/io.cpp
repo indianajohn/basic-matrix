@@ -79,15 +79,8 @@ void testFileWriting() {
 }
 
 void testPfm() {
-  {
-    std::filesystem::path path = "temp_mat.pfm";
-    Matrix random_mat =
-        randomMatrix(640, 480, std::numeric_limits<float>::lowest(),
-                     std::numeric_limits<float>::max());
-    writeToPfm(path, random_mat);
-  }
-  TempDirectory temp_dir;
   for (size_t trial = 0; trial < 20; trial++) {
+    TempDirectory temp_dir;
     std::filesystem::path path = temp_dir.path() / "temp_mat.pfm";
     Matrix random_mat = randomMatrix(rand() % 10, rand() % 10, -20.0, 20.0);
     writeToPfm(path, random_mat);
