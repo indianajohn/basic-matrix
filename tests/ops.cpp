@@ -278,30 +278,6 @@ void simdWorks() {
   }
 }
 
-void benchmark() {
-  int h = 130;
-  Matrix A = randomMatrix(h, h, -100.0, 100.0);
-  Matrix B = randomMatrix(h, h, -100.0, 100.0);
-  auto start = std::chrono::system_clock::now();
-  for (size_t trial = 0; trial < 50; trial++) {
-    Matrix C(h, h);
-    simdMultiply(A, B, C);
-  }
-  int simd_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    std::chrono::system_clock::now() - start)
-                    .count();
-  start = std::chrono::system_clock::now();
-  for (size_t trial = 0; trial < 10; trial++) {
-    Matrix C(h, h);
-    naiveMultiply(A, B, C);
-  }
-  int naive_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                     std::chrono::system_clock::now() - start)
-                     .count();
-  // In testing, simd was 10 times faster.
-  ASSERT(2 * simd_ms < naive_ms);
-}
-
 int main() {
   transposeWorks();
   normWorks();
@@ -320,5 +296,4 @@ int main() {
   scalarDivideWorks();
   negationWorks();
   simdWorks();
-  benchmark();
 }

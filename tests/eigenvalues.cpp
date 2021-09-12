@@ -47,32 +47,6 @@ void testEigenvalues() {
     auto result = eigenvalues(A, 1e-6);
     ASSERT_EQ(result.ok(), false);
   }
-  {
-    double not_converged = 0;
-    double total = 0;
-    for (size_t trial = 0; trial < 100; trial++) {
-      // Generate a non-diagonal matrix with real eigenvalues, by
-      // generating a diagonal matrix with random elements and
-      // multiplying it by a similarity transform.
-      size_t h = 2 + (rand() % 10);
-      Matrix D(h, h);
-      for (size_t i = 0; i < h; i++) {
-        D(i, i) = randomDouble(-0.5, 0.5);
-      }
-      Matrix R = randomMatrix(h, h, -5.0, 5.0);
-      Matrix Q;
-      qrFactorize(Q, R);
-      // this will not have real-valued Eigenvales, and will
-      // fail to converge.
-      Matrix A = Q * D * Q.transposeROI() * 100;
-      auto result = eigenvalues(A, 1e-5);
-      if (!result.ok()) {
-        not_converged++;
-      }
-      total++;
-    }
-    ASSERT(not_converged / total < 0.05);
-  }
 }
 
 int main(int argc, char **argv) { testEigenvalues(); }

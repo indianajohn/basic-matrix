@@ -9,6 +9,7 @@ function(prepare_matrix_test test_name source_file)
   add_executable(${test_name} ${source_file})
   target_link_libraries(${test_name} test_helpers matrix_helpers matrix)
   add_test(${test_name} ${test_name})
+  set_target_properties (${test_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endfunction()
 
 function(untar relative_path_no_extension)
