@@ -133,6 +133,26 @@ public:
     }
     return std::optional<Matrix>();
   }
+  std::optional<Matrix>
+  evaluateUnaryOperator(const std::string &expr, const char &op,
+                        const std::function<Matrix(Matrix)> &fn) {
+    std::vector<std::string> tokens = split(expr, '~');
+    if (tokens.size() == 2) {
+      if (tokens[1].size() == 1 && tokens[1][0] == op) {
+        auto mat = parseMatrixExpression(tokens[0]);
+        if (mat) {
+          try {
+            return fn(*mat);
+          } catch (const std::exception &e) {
+            std::cout << "Expression " << expr
+                      << " failed with exception:" << std::endl
+                      << e.what() << std::endl;
+          }
+        }
+      }
+    }
+    return std::optional<Matrix>();
+  }
 
   std::optional<Matrix> parseMatrixExpression(const std::string &expr) {
     Matrix matrix;
@@ -144,7 +164,15 @@ public:
     } else if (enclosedIn('(', ')', expr) && expr.size() > 2) {
       return this->parseMatrixExpression(expr.substr(1, expr.size() - 2));
     }
-    auto result = evaluateOperator(
+    auto result = evaluateUnaryOperator(
+        expr, 'T', [](const auto &m) { return m.transpose(); });
+    if (result)
+      return result;
+    result = evaluateUnaryOperator(expr, 'I',
+                                   [](const auto &m) { return m.inverse(); });
+    if (result)
+      return result;
+    result = evaluateOperator(
         expr, '+', [](const auto &a, const auto &b) { return a + b; });
     if (result)
       return result;
