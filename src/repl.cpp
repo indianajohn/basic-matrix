@@ -105,6 +105,35 @@ public:
     }
     return Matrix(raw_matrix);
   }
+
+  std::optional<Matrix>
+  evaluateOperator(const std::string &expr, const char &op,
+                   const std::function<Matrix(Matrix, Matrix)> &fn) {
+    std::vector<std::string> tokens = split(expr, op);
+    if (tokens.size() > 1) {
+      auto base_matrix = parseMatrixExpression(tokens[0]);
+      if (base_matrix) {
+        for (size_t i = 1; i < tokens.size(); i++) {
+          auto matrix = parseMatrixExpression(tokens[i]);
+          if (matrix) {
+            try {
+              *base_matrix = fn(*base_matrix, *matrix);
+            } catch (const std::exception &e) {
+              std::cout << "Operator " << op
+                        << " failed with exception: " << std::endl
+                        << e.what() << std::endl;
+              std::cout << "When evaluating token " << i << " of:" << std::endl;
+              printTokens(tokens);
+              return std::optional<Matrix>();
+            }
+          }
+        }
+        return base_matrix;
+      }
+    }
+    return std::optional<Matrix>();
+  }
+
   std::optional<Matrix> parseMatrixExpression(const std::string &expr) {
     Matrix matrix;
     if (enclosedIn('[', ']', expr)) {
@@ -115,6 +144,18 @@ public:
     } else if (enclosedIn('(', ')', expr) && expr.size() > 2) {
       return this->parseMatrixExpression(expr.substr(1, expr.size() - 2));
     }
+    auto result = evaluateOperator(
+        expr, '+', [](const auto &a, const auto &b) { return a + b; });
+    if (result)
+      return result;
+    result = evaluateOperator(
+        expr, '-', [](const auto &a, const auto &b) { return a - b; });
+    if (result)
+      return result;
+    result = evaluateOperator(
+        expr, '*', [](const auto &a, const auto &b) { return a * b; });
+    if (result)
+      return result;
     return std::optional<Matrix>();
   }
 
